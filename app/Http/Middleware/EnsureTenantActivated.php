@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Actions\Workspace\ActivateWorkspace;
 use App\Models\Workspace;
 use Closure;
 use Illuminate\Http\Request;
@@ -17,10 +16,9 @@ class EnsureTenantActivated
      */
     public function handle(Request $request, Closure $next): Response
     {
-//        $request->session()->put(['current_workspace_id' => null]);
-
-        $currentWorkspaceId = $request->session()->get('current_workspace_id') ?? null;
         $user = $request->user();
+        $currentWorkspaceId = $request->session()->get('current_workspace_id') ?? $user->current_workspace_id;
+
         /** @var Workspace $workspace */
         $workspace = $user->workspaces()->find($currentWorkspaceId) ?? $user->workspaces()->first();
 

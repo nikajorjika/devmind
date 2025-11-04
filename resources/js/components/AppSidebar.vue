@@ -9,15 +9,20 @@ import {
     SidebarHeader,
 } from '@/components/ui/sidebar';
 import WorkspaceSwitcher from '@/components/WorkspaceSwitcher.vue';
-import { dashboard } from '@/routes';
+import { dashboard, showMembers } from '@/routes';
 import { type NavItem } from '@/types';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Users } from 'lucide-vue-next';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Members',
+        href: showMembers(),
+        icon: Users,
     },
 ];
 
