@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-Route::get('/test', function () {
-    return inertia('Tenant/Welcome');
-});
+require __DIR__.'/settings.php';
+

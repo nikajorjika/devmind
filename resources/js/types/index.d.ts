@@ -3,6 +3,15 @@ import type { LucideIcon } from 'lucide-vue-next';
 
 export interface Auth {
     user: User;
+    workspaces: Workspace[],
+    defaultWorkspace: Workspace;
+}
+
+export interface Workspace {
+    id: number,
+    name: string;
+    avatar: string;
+    domain: string;
 }
 
 export interface BreadcrumbItem {
@@ -24,6 +33,7 @@ export type AppPageProps<
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    currentWorkspace: Workspace;
 };
 
 export interface User {

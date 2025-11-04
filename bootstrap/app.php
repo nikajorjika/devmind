@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Middleware\EnsureTenantActivated;
+use App\Http\Middleware\EnsureWorkspaceExists;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\HandlesInertiaTenantRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::middleware(['tenant', 'web'])
+            Route::middleware(['web', 'auth', 'verified', 'tenant'])
                 ->group(base_path('routes/tenant.php'));
         },
     )
@@ -29,9 +32,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware
             ->group('tenant', [
+                EnsureWorkspaceExists::class,
+                EnsureTenantActivated::class,
                 NeedsTenant::class,
                 EnsureValidTenantSession::class,
+                HandlesInertiaTenantRequests::class
             ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

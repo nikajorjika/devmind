@@ -1,17 +1,18 @@
 <?php
 
-use Spatie\Multitenancy\Jobs\TenantAware;
+use App\Tenant\Finders\SessionTenantFinder;
+use App\Tenant\Finders\SubdomainWorkspaceFinder;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
-use Spatie\Multitenancy\Jobs\NotTenantAware;
 use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Queue\CallQueuedClosure;
 use Spatie\Multitenancy\Actions\ForgetCurrentTenantAction;
 use Spatie\Multitenancy\Actions\MakeQueueTenantAwareAction;
 use Spatie\Multitenancy\Actions\MakeTenantCurrentAction;
 use Spatie\Multitenancy\Actions\MigrateTenantAction;
-use Spatie\Multitenancy\Models\Tenant;
+use Spatie\Multitenancy\Jobs\NotTenantAware;
+use Spatie\Multitenancy\Jobs\TenantAware;
 
 return [
     /*
@@ -36,9 +37,10 @@ return [
      * A valid task is any class that implements Spatie\Multitenancy\Tasks\SwitchTenantTask
      */
     'switch_tenant_tasks' => [
-         \Spatie\Multitenancy\Tasks\PrefixCacheTask::class,
+        \Spatie\Multitenancy\Tasks\PrefixCacheTask::class,
         // \Spatie\Multitenancy\Tasks\SwitchTenantDatabaseTask::class,
         // \Spatie\Multitenancy\Tasks\SwitchRouteCacheTask::class,
+        App\Tenant\Tasks\UpdateUserCurrentTenant::class,
     ],
 
     /*
@@ -47,7 +49,7 @@ return [
      * It must  extend `Spatie\Multitenancy\Models\Tenant::class` or
      * implement `Spatie\Multitenancy\Contracts\IsTenant::class` interface
      */
-    'tenant_model' => Tenant::class,
+    'tenant_model' => \App\Models\Workspace::class,
 
     /*
      * If there is a current tenant when dispatching a job, the id of the current tenant
