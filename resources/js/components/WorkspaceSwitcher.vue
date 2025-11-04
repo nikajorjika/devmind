@@ -24,6 +24,7 @@ import {
 import type { Workspace } from '@/types';
 import { router, usePage } from '@inertiajs/vue3';
 import SwitchWorkspaceController from '@/actions/App/Http/Controllers/Workspace/SwitchWorkspaceController';
+import CreateWorkspaceController from '@/actions/App/Http/Controllers/Workspace/CreateWorkspaceController';
 
 const emit = defineEmits<{
     /** same as your previous component */
@@ -68,6 +69,7 @@ function selectWorkspace(ws: Workspace) {
 }
 
 function addWorkspace() {
+    router.visit(CreateWorkspaceController());
     emit('add');
 }
 </script>
