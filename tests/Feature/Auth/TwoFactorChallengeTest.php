@@ -26,7 +26,7 @@ test('two factor challenge can be rendered', function () {
         'confirmPassword' => true,
     ]);
 
-    $user = User::factory()->create();
+    $user = User::factory()->withWorkspace()->create();
 
     $user->forceFill([
         'two_factor_secret' => encrypt('test-secret'),

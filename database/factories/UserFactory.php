@@ -55,4 +55,16 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => null,
         ]);
     }
+
+    /**
+     * Create a user with a workspace.
+     */
+    public function withWorkspace(): static
+    {
+        return $this->afterCreating(function (\App\Models\User $user) {
+            $workspace = \App\Models\Workspace::factory()->create();
+            $user->workspaces()->attach($workspace);
+            $user->forceFill(['current_workspace_id' => $workspace->id])->save();
+        });
+    }
 }

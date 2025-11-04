@@ -6,7 +6,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('confirm password screen can be rendered', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->withWorkspace()->create();
 
     $response = $this->actingAs($user)->get(route('password.confirm'));
 

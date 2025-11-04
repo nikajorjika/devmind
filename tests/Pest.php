@@ -12,7 +12,7 @@
 */
 
 pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature', 'Unit');
 
 /*
@@ -44,4 +44,18 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Create a user with a workspace for testing
+ */
+function createUserWithWorkspace(array $userAttributes = [], array $workspaceAttributes = []): \App\Models\User
+{
+    $user = \App\Models\User::factory()->create($userAttributes);
+    $workspace = \App\Models\Workspace::factory()->create($workspaceAttributes);
+    
+    $user->workspaces()->attach($workspace);
+    $user->forceFill(['current_workspace_id' => $workspace->id])->save();
+    
+    return $user->fresh();
 }

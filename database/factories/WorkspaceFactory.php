@@ -13,6 +13,7 @@ class WorkspaceFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
+            'subdomain' => $this->faker->unique()->slug,
             'domain' => $this->faker->unique()->domainName,
             'database' => 'tenant_'.$this->faker->unique()->numerify('####'),
         ];
