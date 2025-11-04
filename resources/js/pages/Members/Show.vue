@@ -3,12 +3,12 @@ import InviteMemberDialog from '@/components/InviteMemberDialog.vue';
 import MembersTable from '@/components/members/MembersTable.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type Member } from '@/types';
+import { type BreadcrumbItem, MembersResource } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { UserPlus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-const props = defineProps<{ members?: Member[] | null | undefined }>();
+const props = defineProps<{ members?: MembersResource }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/' },

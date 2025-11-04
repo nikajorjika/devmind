@@ -1,57 +1,45 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, Mail } from "lucide-vue-next"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { MemberRole } from '@/types';
+import { usePage } from '@inertiajs/vue3';
+import { Loader2, Mail } from 'lucide-vue-next';
+import { ref } from 'vue';
 
-type Role = "Owner" | "Admin" | "Member" | "Viewer"
+const { open } = defineProps<{ open: boolean }>();
+const emit = defineEmits<{ (e: 'update:open', value: boolean): void }>();
+defineSlots<{ default?: () => unknown }>();
 
-const { open } = defineProps<{ open: boolean }>()
-const emit = defineEmits<{ (e: "update:open", value: boolean): void }>()
-defineSlots<{ default?: () => unknown }>()
-
-const isLoading = ref(false)
-const email = ref("")
-const role = ref<Role>("Member")
+const isLoading = ref(false);
+const email = ref('');
+const role = ref<string | null>(null);
+const roles = usePage().props.roles as MemberRole[];
 
 function onOpenChange(val: boolean) {
-    emit("update:open", val)
+    emit('update:open', val);
 }
 
 async function handleSubmit(e: Event) {
-    e.preventDefault()
-    if (!email.value.trim()) return
-
-    isLoading.value = true
-    try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 800))
-        // Replace with real API call
-        // await inviteMember({ email: email.value, role: role.value })
-
-        console.log("Inviting:", { email: email.value, role: role.value })
-
-        // Reset form and close
-        email.value = ""
-        role.value = "Member"
-        emit("update:open", false)
-        // TODO: trigger success toast
-    } catch (err) {
-        console.error("Error inviting member:", err)
-        // TODO: trigger error toast
-    } finally {
-        isLoading.value = false
-    }
+    e.preventDefault();
+    const form = { email: email.value, role: role.value };
+    // TODO: Implement the actual invitation logic here
+    console.log('Inviting member:', { email: email.value, role: role.value });
 }
 </script>
 
@@ -71,9 +59,13 @@ async function handleSubmit(e: Event) {
             <form class="space-y-4" @submit="handleSubmit">
                 <!-- Email Field -->
                 <div class="space-y-2">
-                    <Label for="invite-email" class="font-medium">Email Address</Label>
+                    <Label for="invite-email" class="font-medium"
+                        >Email Address</Label
+                    >
                     <div class="relative">
-                        <Mail class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                        <Mail
+                            class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                        />
                         <Input
                             id="invite-email"
                             type="email"
@@ -94,10 +86,13 @@ async function handleSubmit(e: Event) {
                             <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Owner">Owner</SelectItem>
-                            <SelectItem value="Admin">Admin</SelectItem>
-                            <SelectItem value="Member">Member</SelectItem>
-                            <SelectItem value="Viewer">Viewer</SelectItem>
+                            <SelectItem
+                                v-for="role in roles"
+                                :key="role.name"
+                                :value="role.name"
+                            >
+                                {{ role.name }}
+                            </SelectItem>
                         </SelectContent>
                     </Select>
                     <p class="text-xs text-muted-foreground">
@@ -115,14 +110,15 @@ async function handleSubmit(e: Event) {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" :disabled="isLoading || !email.trim()">
+                    <Button
+                        type="submit"
+                        :disabled="isLoading || !email.trim()"
+                    >
                         <template v-if="isLoading">
                             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                             Sending...
                         </template>
-                        <template v-else>
-                            Send Invite
-                        </template>
+                        <template v-else> Send Invite</template>
                     </Button>
                 </DialogFooter>
             </form>

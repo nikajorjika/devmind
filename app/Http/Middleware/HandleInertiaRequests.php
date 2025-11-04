@@ -6,7 +6,9 @@ use App\Enums\Workspace\RoleEnum;
 use App\Models\Workspace;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
+use Spatie\Permission\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -46,7 +48,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'workspaces' => $request->user()?->workspaces,
             ],
-            'roles' => RoleEnum::cases(),
+            'roles' => Cache::get('roles_cache_key', function () {
+                return Role::all();
+            }),
             'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
