@@ -1,0 +1,20 @@
+{
+  "resources/css/mailbox.css": {
+    "file": "assets/mailbox-D7iedG_3.css",
+    "src": "resources/css/mailbox.css",
+    "isEntry": true,
+    "names": [
+      "mailbox.css"
+    ]
+  },
+  "resources/js/mailbox.js": {
+    "file": "assets/mailbox-1AHT5R6y.js",
+    "name": "mailbox",
+    "src": "resources/js/mailbox.js",
+    "isEntry": true,
+    "css": [
+      "assets/mailbox-DscuMJRI.css",
+      "assets/mailbox-D7iedG_3.css"
+    ]
+  }
+}

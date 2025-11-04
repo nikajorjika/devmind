@@ -20,6 +20,7 @@ class StoreWorkspaceController extends Controller
     public function __invoke(StoreWorkspaceRequest $request)
     {
         $workspace = auth()->user()->workspaces()->create($request->validated());
+        // Activate the newly created workspace for the user.
 
         app(ActivateWorkspace::class)->handle($workspace, auth()->user());
 

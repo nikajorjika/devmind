@@ -97,6 +97,8 @@ return [
             'retry_after' => 60,
         ],
 
+        'inbox' => ['transport' => 'inbox'],
+
     ],
 
     /*
