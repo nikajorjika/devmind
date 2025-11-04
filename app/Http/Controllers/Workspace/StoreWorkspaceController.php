@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Workspace;
 
 use App\Actions\Workspace\ActivateWorkspace;
+use App\Enums\Workspace\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Workspace\StoreWorkspaceRequest;
 use Illuminate\Http\RedirectResponse;
@@ -19,10 +20,14 @@ class StoreWorkspaceController extends Controller
      */
     public function __invoke(StoreWorkspaceRequest $request)
     {
-        $workspace = auth()->user()->workspaces()->create($request->validated());
-        // Activate the newly created workspace for the user.
+        $user = auth()->user();
+        $workspace = $user->workspaces()->create($request->validated());
 
-        app(ActivateWorkspace::class)->handle($workspace, auth()->user());
+        app(ActivateWorkspace::class)->handle($workspace, $user);
+
+        setPermissionsTeamId($workspace->id);
+
+        $user->assignRole(RoleEnum::OWNER);
 
         return redirect()->route('dashboard');
     }

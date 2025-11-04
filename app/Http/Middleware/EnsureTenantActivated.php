@@ -30,6 +30,8 @@ class EnsureTenantActivated
             $user->forceFill(['current_workspace_id' => $workspace->getKey()])->save();
         }
 
+        setPermissionsTeamId($workspace->getKey());
+
         return $next($request);
     }
 }
