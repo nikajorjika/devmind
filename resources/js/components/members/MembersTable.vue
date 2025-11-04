@@ -15,23 +15,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { MembersResource } from '@/types';
 import { Deferred } from '@inertiajs/vue3';
 import MemberRow from './MemberRow.vue';
 
-type MemberStatus = 'active' | 'pending' | 'inactive';
-type MemberRole = 'Owner' | 'Admin' | 'Member' | 'Viewer';
-
-interface Member {
-    id: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    role: MemberRole;
-    status: MemberStatus;
-    created_at: string;
-}
-
-const props = defineProps<{ members: Member[] }>();
+const props = defineProps<{ members?: MembersResource }>();
 </script>
 
 <template>
@@ -43,7 +31,7 @@ const props = defineProps<{ members: Member[] }>();
                     <template #fallback>
                         <Skeleton class="h-5 w-[160px] rounded-full" />
                     </template>
-                    {{ props.members?.length }} members in your workspace
+                    {{ props.members?.data.length }} members in your workspace
                 </Deferred>
             </CardDescription>
         </CardHeader>
@@ -68,7 +56,7 @@ const props = defineProps<{ members: Member[] }>();
                         </template>
 
                         <MemberRow
-                            v-for="member in props.members"
+                            v-for="member in props.members?.data"
                             :key="member.id"
                             :member="member"
                         />

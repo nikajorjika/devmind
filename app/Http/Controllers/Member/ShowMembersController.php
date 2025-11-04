@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MemberResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -20,6 +21,8 @@ class ShowMembersController extends Controller
 
     protected function getWorkspaceMembers()
     {
-        return auth()->user()->currentWorkspace->users()->get();
+        $members = auth()->user()->currentWorkspace->users()->with('roles')->get();
+
+        return MemberResource::collection($members);
     }
 }

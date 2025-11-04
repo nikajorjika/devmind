@@ -1,27 +1,14 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { type BreadcrumbItem } from '@/types';
-import MembersTable from '@/components/members/MembersTable.vue';
 import InviteMemberDialog from '@/components/InviteMemberDialog.vue';
+import MembersTable from '@/components/members/MembersTable.vue';
 import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem, type Member } from '@/types';
+import { Head } from '@inertiajs/vue3';
 import { UserPlus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-type MemberStatus = 'active' | 'pending' | 'inactive';
-type MemberRole = 'Owner' | 'Admin' | 'Member' | 'Viewer';
-
-interface Member {
-    id: string;
-    name: string;
-    email: string;
-    avatar?: string;
-    role: MemberRole;
-    status: MemberStatus;
-    created_at: string;
-}
-
-const props = defineProps<{ members: Member[] }>();
+const props = defineProps<{ members?: Member[] | null | undefined }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/' },
@@ -29,6 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const inviteOpen = ref(false);
+
 </script>
 
 <template>

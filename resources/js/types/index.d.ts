@@ -3,12 +3,12 @@ import type { LucideIcon } from 'lucide-vue-next';
 
 export interface Auth {
     user: User;
-    workspaces: Workspace[],
+    workspaces: Workspace[];
     defaultWorkspace: Workspace;
 }
 
 export interface Workspace {
-    id: number,
+    id: number;
     name: string;
     avatar: string;
     domain: string;
@@ -24,6 +24,43 @@ export interface NavItem {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon;
     isActive?: boolean;
+}
+
+export interface MemberRole {
+    id: number;
+    name: string;
+    guard_name: string;
+    description: string | null;
+}
+
+export interface MemberMembership {
+    workspace_id: number;
+    user_id: number;
+}
+
+export interface Member {
+    id: number;
+    name: string;
+    email: string;
+    status: string;
+    email_verified: boolean;
+    created_at: string; // ISO8601
+    updated_at: string | null; // ISO8601
+
+    workspace_id: number | null;
+    membership: MemberMembership;
+
+    role: string; // primary role in current workspace
+    role_id: number;
+    is_owner: boolean;
+
+    roles: MemberRole[];
+
+    two_factor_enabled: boolean;
+}
+
+export interface MembersResource {
+    data: Member[];
 }
 
 export type AppPageProps<

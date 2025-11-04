@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Workspace\RoleEnum;
 use App\Models\Workspace;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -43,8 +44,9 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
-                'workspaces' => $request->user()?->workspaces
+                'workspaces' => $request->user()?->workspaces,
             ],
+            'roles' => RoleEnum::cases(),
             'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
