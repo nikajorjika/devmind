@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
 
 return new class extends Migration
 {
@@ -15,20 +16,6 @@ return new class extends Migration
         Schema::table('roles', function (Blueprint $table) {
             $table->string('description')->nullable()->after('name');
         });
-
-        \Spatie\Permission\Models\Role::createMa([
-            'name' => 'Owner',
-            'description' => 'Administrator with full access to all resources.',
-        ]);
-
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        //
-    }
 };
