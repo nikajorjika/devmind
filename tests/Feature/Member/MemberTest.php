@@ -20,10 +20,6 @@ test('members page shows workspace members', function () {
     $user = User::factory()->withWorkspace()->create();
     $workspace = $user->currentWorkspace;
     
-    // Set workspace context
-    $workspace->makeCurrent();
-    setPermissionsTeamId($workspace->id);
-    
     // Add another user to the workspace  
     $otherUser = User::factory()->create();
     $workspace->users()->attach($otherUser);

@@ -107,10 +107,6 @@ test('user can switch to second workspace after creating first', function () {
     
     $user->workspaces()->attach([$workspace1->id, $workspace2->id]);
     $user->forceFill(['current_workspace_id' => $workspace1->id])->save();
-    
-    // Make workspace1 current first
-    $workspace1->makeCurrent();
-    session(['current_workspace_id' => $workspace1->id]);
 
     $response = $this->actingAs($user)->post(route('workspace.switch'), [
         'workspace_id' => $workspace2->id,

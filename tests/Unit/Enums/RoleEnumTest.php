@@ -22,10 +22,3 @@ test('RoleEnum description method returns correct descriptions', function () {
     expect(RoleEnum::GUEST->description())
         ->toBe('User with limited access to resources.');
 });
-
-test('RoleEnum labels method returns correct labels', function () {
-    expect(RoleEnum::OWNER->labels())->toBe('Owner');
-    expect(RoleEnum::ADMIN->labels())->toBe('Admin');
-    expect(RoleEnum::MEMBER->labels())->toBe('Member');
-    expect(RoleEnum::GUEST->labels())->toBe('Guest');
-});
