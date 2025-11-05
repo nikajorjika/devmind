@@ -39,7 +39,7 @@ async function handleSubmit(e: Event) {
     e.preventDefault();
     const form = { email: email.value, role: role.value };
     // TODO: Implement the actual invitation logic here
-    console.log('Inviting member:', { email: email.value, role: role.value });
+    console.log('Inviting member:', form);
 }
 </script>
 
