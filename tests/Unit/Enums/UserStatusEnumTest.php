@@ -1,24 +1,22 @@
 <?php
 
-use App\Enums\Workspace\UserStatusEnum;
+use App\Enums\Member\MemberStatus;
 
-test('UserStatusEnum has correct cases', function () {
-    expect(UserStatusEnum::ACTIVE->value)->toBe('Active');
-    expect(UserStatusEnum::INACTIVE->value)->toBe('Inactive');
-    expect(UserStatusEnum::PENDING->value)->toBe('Pending');
-    expect(UserStatusEnum::SUSPENDED->value)->toBe('Suspended');
+test('MemberStatus has correct cases', function () {
+    expect(MemberStatus::ACTIVE->value)->toBe('Active')
+        ->and(MemberStatus::INACTIVE->value)->toBe('Inactive')
+        ->and(MemberStatus::PENDING->value)->toBe('Pending')
+        ->and(MemberStatus::SUSPENDED->value)->toBe('Suspended');
 });
 
-test('UserStatusEnum description method returns correct descriptions', function () {
-    expect(UserStatusEnum::ACTIVE->description())
-        ->toBe('The user is active and has full access.');
-    
-    expect(UserStatusEnum::INACTIVE->description())
-        ->toBe('The user is inactive and cannot access the system.');
-    
-    expect(UserStatusEnum::PENDING->description())
-        ->toBe('The user registration is pending approval.');
-    
-    expect(UserStatusEnum::SUSPENDED->description())
-        ->toBe('The user is suspended due to violations.');
+test('MemberStatus description method returns correct descriptions', function () {
+    expect(MemberStatus::ACTIVE->description())
+        ->toBe('The member is active and has full access.')
+        ->and(MemberStatus::INACTIVE->description())
+        ->toBe('The member is inactive and cannot access the system.')
+        ->and(MemberStatus::PENDING->description())
+        ->toBe('The member registration is pending approval.')
+        ->and(MemberStatus::SUSPENDED->description())
+        ->toBe('The member is suspended due to violations.');
+
 });
