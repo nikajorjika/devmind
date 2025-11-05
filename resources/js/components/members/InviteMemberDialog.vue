@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -17,8 +18,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { inviteMember } from '@/routes'; // Wayfinder helper
 import { MemberRole } from '@/types';
-import { usePage } from '@inertiajs/vue3';
+import { Form, usePage } from '@inertiajs/vue3';
 import { Loader2, Mail } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -26,20 +28,11 @@ const { open } = defineProps<{ open: boolean }>();
 const emit = defineEmits<{ (e: 'update:open', value: boolean): void }>();
 defineSlots<{ default?: () => unknown }>();
 
-const isLoading = ref(false);
-const email = ref('');
-const role = ref<string | null>(null);
-const roles = usePage().props.roles as MemberRole[];
+const roles = (usePage().props.roles as MemberRole[]) ?? [];
+const role = ref<string | null>(null); // local for the Select
 
 function onOpenChange(val: boolean) {
     emit('update:open', val);
-}
-
-async function handleSubmit(e: Event) {
-    e.preventDefault();
-    const form = { email: email.value, role: role.value };
-    // TODO: Implement the actual invitation logic here
-    console.log('Inviting member:', form);
 }
 </script>
 
@@ -56,7 +49,19 @@ async function handleSubmit(e: Event) {
                 </DialogDescription>
             </DialogHeader>
 
-            <form class="space-y-4" @submit="handleSubmit">
+            <!-- Inertia Form: Wayfinder-provided form config -->
+            <Form
+                v-bind="inviteMember.form()"
+                :reset-on-success="['email', 'role']"
+                @success="
+                    () => {
+                        role = null;
+                        onOpenChange(false);
+                    }
+                "
+                v-slot="{ errors, processing }"
+                class="space-y-4"
+            >
                 <!-- Email Field -->
                 <div class="space-y-2">
                     <Label for="invite-email" class="font-medium"
@@ -69,35 +74,40 @@ async function handleSubmit(e: Event) {
                         <Input
                             id="invite-email"
                             type="email"
+                            name="email"
                             placeholder="member@example.com"
-                            v-model="email"
-                            :disabled="isLoading"
+                            :disabled="processing"
                             required
                             class="pl-10"
+                            autocomplete="email"
                         />
                     </div>
+                    <InputError :message="errors.email" />
                 </div>
 
                 <!-- Role Field -->
                 <div class="space-y-2">
                     <Label for="invite-role" class="font-medium">Role</Label>
-                    <Select v-model="role" :disabled="isLoading">
+                    <Input type="hidden" name="role" :value="role ?? ''" />
+                    <Select v-model="role" :disabled="processing">
                         <SelectTrigger id="invite-role">
                             <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem
-                                v-for="role in roles"
-                                :key="role.name"
-                                :value="role.name"
+                                v-for="r in roles"
+                                :key="r.name"
+                                :value="r.name"
                             >
-                                {{ role.name }}
+                                {{ r.name }}
                             </SelectItem>
                         </SelectContent>
                     </Select>
+
                     <p class="text-xs text-muted-foreground">
                         Choose the role permissions for this member
                     </p>
+                    <InputError :message="errors.role" />
                 </div>
 
                 <!-- Footer -->
@@ -105,23 +115,21 @@ async function handleSubmit(e: Event) {
                     <Button
                         type="button"
                         variant="outline"
-                        :disabled="isLoading"
+                        :disabled="processing"
                         @click="onOpenChange(false)"
                     >
                         Cancel
                     </Button>
-                    <Button
-                        type="submit"
-                        :disabled="isLoading || !email.trim()"
-                    >
-                        <template v-if="isLoading">
+
+                    <Button type="submit" :disabled="processing || !role">
+                        <template v-if="processing">
                             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                             Sending...
                         </template>
-                        <template v-else> Send Invite</template>
+                        <template v-else>Send Invite</template>
                     </Button>
                 </DialogFooter>
-            </form>
+            </Form>
         </DialogContent>
     </Dialog>
 </template>

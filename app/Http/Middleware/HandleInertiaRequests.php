@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Workspace\Capabilities;
 use App\Enums\Workspace\RoleEnum;
 use App\Models\Workspace;
 use Illuminate\Foundation\Inspiring;
@@ -48,10 +49,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'workspaces' => $request->user()?->workspaces,
             ],
-            'roles' => Cache::get('roles_cache_key', function () {
-                return Role::all();
-            }),
             'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'flash' => fn() => $request->session()->get('flash'),
         ];
     }
+
 }

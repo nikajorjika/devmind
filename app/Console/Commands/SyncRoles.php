@@ -64,6 +64,7 @@ class SyncRoles extends Command
                 Capabilities::MEMBER_INVITE,
                 Capabilities::MEMBER_REMOVE,
                 Capabilities::MEMBER_CHANGE_ROLE,
+                Capabilities::MEMBER_MAKE_ADMIN,
                 Capabilities::WORKSPACE_UPDATE,
             ],
             RoleEnum::MEMBER->value => [

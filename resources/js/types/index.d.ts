@@ -63,6 +63,31 @@ export interface MembersResource {
     data: Member[];
 }
 
+type SimpleFlash = {
+    success?: string | null;
+    error?: string | null;
+    warning?: string | null;
+    info?: string | null;
+};
+
+// status keys we’ll accept from backend for the advanced API
+type ToastStatus = 'success' | 'error' | 'warning' | 'info' | 'default';
+
+export type ToastPayload =
+    | {
+          status?: ToastStatus;
+          title?: string;
+          message?: string;
+          description?: string;
+          // anything vue-sonner accepts (duration, closeButton, action, etc.)
+          [key: string]: unknown;
+      }
+    | string;
+
+export interface FlashProps extends SimpleFlash {
+    toast?: ToastPayload | ToastPayload[] | null;
+}
+
 export type AppPageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
@@ -71,6 +96,7 @@ export type AppPageProps<
     auth: Auth;
     sidebarOpen: boolean;
     currentWorkspace: Workspace;
+    flash?: FlashProps;
 };
 
 export interface User {
