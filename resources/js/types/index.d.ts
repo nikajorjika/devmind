@@ -42,53 +42,27 @@ export interface Member {
     id: number;
     name: string;
     email: string;
-    status: string;
     email_verified: boolean;
-    created_at: string; // ISO8601
-    updated_at: string | null; // ISO8601
-
-    workspace_id: number | null;
-    membership: MemberMembership;
-
-    role: string; // primary role in current workspace
-    role_id: number;
+    role?: string; // primary role in current workspace
     is_owner: boolean;
-
-    roles: MemberRole[];
-
     two_factor_enabled: boolean;
 }
 
 export interface Invitation {
     id: number;
-    workspace_id: number;
-    inviter_id: number;
-
     email: string;
     role_name: string;
-
-    token: string; // ULID string
+    status: 'pending' | 'accepted' | 'revoked' | 'expired' | string;
     expires_at: string | null; // ISO timestamp
-    accepted_at: string | null;
-    accepted_by: number | null;
-    revoked_at: string | null;
-
-    status: 'pending' | 'accepted' | 'revoked' | string; // fallback for future statuses
-    meta: Record<string, any> | null;
-
     created_at: string;
-    updated_at: string;
-
-    inviter ? : {
-        id: number
-        name: string
-        email: string
+    
+    inviter?: {
+        id: number;
+        name: string;
     };
-    accepted_user ? : {
-        id: number
-        name: string
-        email: string
-    };
+    
+    is_expired: boolean;
+    is_pending: boolean;
 }
 
 export interface MembersResource {
