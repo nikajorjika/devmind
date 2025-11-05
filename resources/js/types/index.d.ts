@@ -59,8 +59,44 @@ export interface Member {
     two_factor_enabled: boolean;
 }
 
+export interface Invitation {
+    id: number;
+    workspace_id: number;
+    inviter_id: number;
+
+    email: string;
+    role_name: string;
+
+    token: string; // ULID string
+    expires_at: string | null; // ISO timestamp
+    accepted_at: string | null;
+    accepted_by: number | null;
+    revoked_at: string | null;
+
+    status: 'pending' | 'accepted' | 'revoked' | string; // fallback for future statuses
+    meta: Record<string, any> | null;
+
+    created_at: string;
+    updated_at: string;
+
+    inviter ? : {
+        id: number
+        name: string
+        email: string
+    };
+    accepted_user ? : {
+        id: number
+        name: string
+        email: string
+    };
+}
+
 export interface MembersResource {
     data: Member[];
+}
+
+export interface InvitationResource {
+    data: Invitation[];
 }
 
 type SimpleFlash = {
@@ -75,13 +111,13 @@ type ToastStatus = 'success' | 'error' | 'warning' | 'info' | 'default';
 
 export type ToastPayload =
     | {
-          status?: ToastStatus;
-          title?: string;
-          message?: string;
-          description?: string;
-          // anything vue-sonner accepts (duration, closeButton, action, etc.)
-          [key: string]: unknown;
-      }
+    status?: ToastStatus;
+    title?: string;
+    message?: string;
+    description?: string;
+    // anything vue-sonner accepts (duration, closeButton, action, etc.)
+    [key: string]: unknown;
+}
     | string;
 
 export interface FlashProps extends SimpleFlash {

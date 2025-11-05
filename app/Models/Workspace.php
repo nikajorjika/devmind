@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Models\Tenant;
 
 class Workspace extends Tenant
@@ -26,5 +27,16 @@ class Workspace extends Tenant
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_workspace');
+    }
+
+
+    /**
+     * Get the invitations for the workspace.
+     *
+     * @return HasMany<Invitation, $this>
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
     }
 }

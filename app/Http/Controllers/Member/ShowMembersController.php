@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InvitationResource;
 use App\Http\Resources\MemberResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,6 +17,7 @@ class ShowMembersController extends Controller
     {
         return Inertia::render('Members/Show', [
             'members' => Inertia::defer(fn() => $this->getWorkspaceMembers()),
+            'invitations' => Inertia::defer(fn() => $this->getInvitations()),
         ]);
     }
 
@@ -24,5 +26,12 @@ class ShowMembersController extends Controller
         $members = auth()->user()->currentWorkspace->users()->with('roles')->get();
 
         return MemberResource::collection($members);
+    }
+
+    protected function getInvitations()
+    {
+        $invitations = auth()->user()->currentWorkspace->invitations()->with('inviter')->get();
+
+        return InvitationResource::collection($invitations);
     }
 }
