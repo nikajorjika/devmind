@@ -18,7 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { inviteMember } from '@/routes'; // Wayfinder helper
+import { invitationCreate } from '@/routes'; // Wayfinder helper
 import { MemberRole } from '@/types';
 import { Form, usePage } from '@inertiajs/vue3';
 import { Loader2, Mail } from 'lucide-vue-next';
@@ -51,7 +51,7 @@ function onOpenChange(val: boolean) {
 
             <!-- Inertia Form: Wayfinder-provided form config -->
             <Form
-                v-bind="inviteMember.form()"
+                v-bind="invitationCreate.form()"
                 :reset-on-success="['email', 'role']"
                 @success="
                     () => {

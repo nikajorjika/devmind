@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Workspace\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -39,7 +40,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
@@ -49,7 +50,7 @@ class UserFactory extends Factory
      */
     public function withoutTwoFactor(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
@@ -65,6 +66,8 @@ class UserFactory extends Factory
             $workspace = \App\Models\Workspace::factory()->create();
             $user->workspaces()->attach($workspace);
             $user->forceFill(['current_workspace_id' => $workspace->id])->save();
+            setPermissionsTeamId($workspace->id);
+            $user->assignRole(RoleEnum::OWNER);
         });
     }
 }

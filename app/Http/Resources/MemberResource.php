@@ -29,34 +29,12 @@ class MemberResource extends JsonResource
         $primaryRole = $rolesCollection->first();
 
         return [
-            'id'              => $this->id,
-            'name'            => $this->name,
-            'email'           => $this->email,
-            'status'           => 'active',
-            'email_verified'  => ! is_null($this->email_verified_at),
-            'created_at'      => optional($this->created_at)->toIso8601String(),
-            'updated_at'      => optional($this->updated_at)->toIso8601String(),
-
-            // Workspace membership context
-            'workspace_id'    => $workspaceId,
-            'membership'      => [
-                'workspace_id' => $workspaceId,
-                'user_id'      => $this->id,
-            ],
-
-            'role'            => data_get($primaryRole, 'name'),
-            'role_id'         => data_get($primaryRole, 'id'),
-            'is_owner'        => (bool) $rolesCollection->firstWhere('name', 'Owner'),
-
-            // All roles in current workspace (guarded to what's loaded)
-            'roles'           => $rolesCollection->map(fn ($r) => [
-                'id'          => $r->id,
-                'name'        => $r->name,
-                'guard_name'  => $r->guard_name,
-                'description' => $r->description,
-            ])->all(),
-
-            // Security flags
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'email_verified' => ! is_null($this->email_verified_at),
+            'role' => data_get($primaryRole, 'name'),
+            'is_owner' => (bool) $rolesCollection->firstWhere('name', 'Owner'),
             'two_factor_enabled' => ! is_null($this->two_factor_confirmed_at),
         ];
     }
