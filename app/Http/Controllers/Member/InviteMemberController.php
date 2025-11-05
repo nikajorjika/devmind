@@ -36,7 +36,7 @@ class InviteMemberController extends Controller
             'status' => InvitationStatus::PENDING->value,
         ]);
 
-        event(new InvitationCreated($invitation)); // TODO: Need to implement the event listener to send email
+        event(new InvitationCreated($invitation));
 
         return redirect()->back()->with('flash', [
             'status' => 'success',
