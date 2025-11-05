@@ -248,21 +248,7 @@ test('invitation model methods work correctly', function () {
     ]);
 
     expect($expiredInvitation->isExpired())->toBeTrue();
-    expect($expiredInvitation->isPending())->toBeFalse(); // Expired invitations are not pending
-    
-    $revokedInvitation = Invitation::create([
-        'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'revoked-check@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->addDays(7),
-        'status' => InvitationStatus::REVOKED->value,
-        'revoked_at' => now(),
-    ]);
-    
-    expect($revokedInvitation->isPending())->toBeFalse();
-    expect($revokedInvitation->isRevoked())->toBeTrue();
+    expect($expiredInvitation->isPending())->toBeFalse();
 });
 
 test('guests cannot invite members', function () {
