@@ -52,7 +52,7 @@ test('invitation created event fires email listener', function () {
 
     event(new InvitationCreated($invitation));
 
-    Mail::assertQueued(WorkspaceInvitationMail::class, function ($mail) use ($invitation) {
+    Mail::assertSent(WorkspaceInvitationMail::class, function ($mail) use ($invitation) {
         return $mail->hasTo($invitation->email) && 
                $mail->invitation->id === $invitation->id;
     });

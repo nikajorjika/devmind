@@ -65,6 +65,10 @@ class UserFactory extends Factory
             $workspace = \App\Models\Workspace::factory()->create();
             $user->workspaces()->attach($workspace);
             $user->forceFill(['current_workspace_id' => $workspace->id])->save();
+            
+            // Assign Owner role with proper permissions context
+            setPermissionsTeamId($workspace->id);
+            $user->assignRole(\App\Enums\Workspace\RoleEnum::OWNER);
         });
     }
 }
