@@ -8,7 +8,7 @@ import {
     SidebarFooter,
     SidebarHeader,
 } from '@/components/ui/sidebar';
-import WorkspaceSwitcher from '@/components/WorkspaceSwitcher.vue';
+import WorkspaceSwitcher from '@/components/workspace/WorkspaceSwitcher.vue';
 import { dashboard, showMembers } from '@/routes';
 import { type NavItem } from '@/types';
 import { BookOpen, Folder, LayoutGrid, Users } from 'lucide-vue-next';

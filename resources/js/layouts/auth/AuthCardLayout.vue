@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import AppLogoIcon from '@/components/core/AppLogoIcon.vue';
 import {
     Card,
     CardContent,

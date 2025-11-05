@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InviteMemberDialog from '@/components/InviteMemberDialog.vue';
+import InviteMemberDialog from '@/components/members/InviteMemberDialog.vue';
 import MembersTable from '@/components/members/MembersTable.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';

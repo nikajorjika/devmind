@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CreateWorkspaceForm from '@/components/CreateWorkspaceForm.vue'
+import CreateWorkspaceForm from '@/components/workspace/CreateWorkspaceForm.vue'
 </script>
 
 <template>
