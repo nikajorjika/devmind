@@ -51,12 +51,22 @@ class HandleInertiaRequests extends Middleware
                 'workspaces' => $request->user()?->workspaces,
             ],
             'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'flash' => fn() => fn() => tap($request->session()->pull('flash'), function (&$f) {
-                if (is_array($f)) {
-                    $f['id'] ??= (string) Str::uuid();
-                }
-            })
+            'flash' => $this->getSessionNotification($request)
         ];
+    }
+
+    /**
+     * @param  Request  $request
+     *
+     * @return \Closure
+     */
+    public function getSessionNotification(Request $request): \Closure
+    {
+        return fn() => tap($request->session()->pull('flash'), function (&$f) {
+            if (is_array($f)) {
+                $f['id'] ??= (string) Str::uuid();
+            }
+        });
     }
 
 }
