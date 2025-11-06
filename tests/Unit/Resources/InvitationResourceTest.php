@@ -3,24 +3,25 @@
 use App\Http\Resources\InvitationResource;
 use App\Models\Invitation;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('InvitationResource transforms invitation data correctly', function () {
     $user = User::factory()->withWorkspace()->create();
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'test@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->addDays(7),
-        'status' => 'pending',
+        'inviter_id'   => $user->id,
+        'email'        => 'test@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'pending',
     ]);
 
-    $resource = new InvitationResource($invitation);
-    $array = $resource->toArray(request());
+    $array = (new InvitationResource($invitation))->toArray(request());
 
     expect($array)->toHaveKeys([
         'id',
@@ -31,14 +32,19 @@ test('InvitationResource transforms invitation data correctly', function () {
         'created_at',
         'is_expired',
         'is_pending',
-    ]);
-
-    expect($array['id'])->toBe($invitation->id);
-    expect($array['email'])->toBe($invitation->email);
-    expect($array['role_name'])->toBe($invitation->role_name);
-    expect($array['status'])->toBe('pending');
-    expect($array['is_expired'])->toBeBool();
-    expect($array['is_pending'])->toBeBool();
+        'revoked_at',
+    ])
+        ->and($array['id'])->toBe($invitation->id)
+        ->and($array['email'])->toBe($invitation->email)
+        ->and($array['role_name'])->toBe($invitation->role_name)
+        ->and($array['status'])->toBe('pending')
+        // timestamps are ISO strings from the resource
+        ->and($array['expires_at'])->toBe($invitation->expires_at->toISOString())
+        ->and($array['created_at'])->toBe($invitation->created_at->toISOString())
+        ->and($array['revoked_at'])->toBeNull()
+        // flags
+        ->and($array['is_expired'])->toBeBool()
+        ->and($array['is_pending'])->toBeBool();
 });
 
 test('InvitationResource does not expose sensitive fields', function () {
@@ -46,24 +52,23 @@ test('InvitationResource does not expose sensitive fields', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'test@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->addDays(7),
-        'status' => 'pending',
+        'inviter_id'   => $user->id,
+        'email'        => 'test@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'pending',
     ]);
 
-    $resource = new InvitationResource($invitation);
-    $array = $resource->toArray(request());
+    $array = (new InvitationResource($invitation))->toArray(request());
 
-    // Ensure sensitive fields are not exposed
-    expect($array)->not->toHaveKey('token');
-    expect($array)->not->toHaveKey('workspace_id');
-    expect($array)->not->toHaveKey('inviter_id');
-    expect($array)->not->toHaveKey('accepted_by');
-    expect($array)->not->toHaveKey('meta');
-    expect($array)->not->toHaveKey('updated_at');
+    expect($array)
+        ->not->toHaveKey('token')
+        ->and($array)->not->toHaveKey('workspace_id')
+        ->and($array)->not->toHaveKey('inviter_id')
+        ->and($array)->not->toHaveKey('accepted_by')
+        ->and($array)->not->toHaveKey('meta')
+        ->and($array)->not->toHaveKey('updated_at');
 });
 
 test('InvitationResource includes inviter when loaded', function () {
@@ -71,60 +76,70 @@ test('InvitationResource includes inviter when loaded', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'test@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->addDays(7),
-        'status' => 'pending',
+        'inviter_id'   => $user->id,
+        'email'        => 'test@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'pending',
     ]);
 
     $invitation->load('inviter');
 
-    $resource = new InvitationResource($invitation);
-    $array = $resource->toArray(request());
+    $array = (new InvitationResource($invitation))->toArray(request());
 
-    expect($array)->toHaveKey('inviter');
-    expect($array['inviter'])->toBeArray();
-    expect($array['inviter'])->toHaveKeys(['id', 'name']);
-    expect($array['inviter']['id'])->toBe($user->id);
-    expect($array['inviter']['name'])->toBe($user->name);
+    expect($array)->toHaveKey('inviter')
+        ->and($array['inviter'])->toBeArray()
+        ->and($array['inviter'])->toHaveKeys(['id', 'name'])
+        ->and($array['inviter']['id'])->toBe($user->id)
+        ->and($array['inviter']['name'])->toBe($user->name);
 });
 
-test('InvitationResource helper methods work correctly', function () {
+test('InvitationResource helper flags for pending, expired, and revoked', function () {
     $user = User::factory()->withWorkspace()->create();
 
-    // Test pending invitation
-    $pendingInvitation = Invitation::create([
+    // Pending (future expiry)
+    $pending = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'pending@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->addDays(7),
-        'status' => 'pending',
+        'inviter_id'   => $user->id,
+        'email'        => 'pending@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'pending',
     ]);
+    $pendingArr = (new InvitationResource($pending))->toArray(request());
+    expect($pendingArr['is_pending'])->toBeTrue()
+        ->and($pendingArr['is_expired'])->toBeFalse()
+        ->and($pendingArr['revoked_at'])->toBeNull();
 
-    $resource = new InvitationResource($pendingInvitation);
-    $array = $resource->toArray(request());
-
-    expect($array['is_pending'])->toBeTrue();
-    expect($array['is_expired'])->toBeFalse();
-
-    // Test expired invitation
-    $expiredInvitation = Invitation::create([
+    // Expired (past expiry)
+    $expired = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id' => $user->id,
-        'email' => 'expired@example.com',
-        'role_name' => 'Member',
-        'token' => \Illuminate\Support\Str::ulid(),
-        'expires_at' => now()->subDays(1),
-        'status' => 'pending',
+        'inviter_id'   => $user->id,
+        'email'        => 'expired@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->subDay(),
+        'status'       => 'pending',
     ]);
+    $expiredArr = (new InvitationResource($expired))->toArray(request());
+    expect($expiredArr['is_expired'])->toBeTrue()
+        ->and($expiredArr['is_pending'])->toBeFalse();
 
-    $resource = new InvitationResource($expiredInvitation);
-    $array = $resource->toArray(request());
-
-    expect($array['is_expired'])->toBeTrue();
-    expect($array['is_pending'])->toBeFalse();
+    // Revoked (explicitly revoked)
+    $revoked = Invitation::create([
+        'workspace_id' => $user->current_workspace_id,
+        'inviter_id'   => $user->id,
+        'email'        => 'revoked@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'revoked',
+        'revoked_at'   => now(),
+    ]);
+    $revokedArr = (new InvitationResource($revoked))->toArray(request());
+    expect($revokedArr['status'])->toBe('revoked')
+        ->and($revokedArr['revoked_at'])->toBe($revoked->revoked_at->toISOString())
+        ->and($revokedArr['is_pending'])->toBeFalse();
 });
