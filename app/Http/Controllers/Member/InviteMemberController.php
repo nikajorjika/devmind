@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Member;
 
 use App\Enums\Invitation\InvitationStatus;
 use App\Enums\Workspace\RoleEnum;
-use App\Enums\Workspace\UserStatusEnum;
 use App\Events\InvitationCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\InviteMemberRequest;
@@ -38,10 +37,12 @@ class InviteMemberController extends Controller
 
         event(new InvitationCreated($invitation));
 
-        return redirect()->back()->with('flash', [
+        request()->session()->flash('flash', [
             'status' => 'success',
             'title' => 'Invitation sent',
             'description' => 'We emailed an invite to the user. They will join as a '.RoleEnum::from($data['role'])->value.' role.',
         ]);
+
+        return redirect()->back();
     }
 }

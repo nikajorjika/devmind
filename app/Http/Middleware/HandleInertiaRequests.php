@@ -8,6 +8,8 @@ use App\Models\Workspace;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
 use Spatie\Permission\Models\Role;
 
@@ -49,7 +51,11 @@ class HandleInertiaRequests extends Middleware
                 'workspaces' => $request->user()?->workspaces,
             ],
             'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'flash' => fn() => $request->session()->get('flash'),
+            'flash' => fn() => fn() => tap($request->session()->pull('flash'), function (&$f) {
+                if (is_array($f)) {
+                    $f['id'] ??= (string) Str::uuid();
+                }
+            })
         ];
     }
 

@@ -1,18 +1,27 @@
 // composables/useInertiaToasts.ts
-import { router } from '@inertiajs/vue3';
+import { ToastStatus } from '@/types';
+import { usePage } from '@inertiajs/vue3';
+import { watch } from 'vue';
 import { toast } from 'vue-sonner';
 
-type Kind = 'success' | 'error' | 'info' | 'warning';
-
 export function useInertiaToasts() {
-    const show = (type: Kind, title?: string, description?: string) => {
+    const page = usePage();
+    const show = (
+        status: ToastStatus,
+        title?: string,
+        description?: string,
+    ) => {
         if (!title) return;
-        toast[type](title, { description });
+        toast[status](title, { description });
     };
 
-    router.on('success', (e: any) => {
-        const f = e.detail?.page?.props?.flash;
-
-        if (f?.title) show(f.status as Kind, f.title, f.description);
-    });
+    watch(
+        () => page.props.flash?.id,
+        (newId) => {
+            if (newId) {
+                const { status, title, description } = page.props.flash;
+                show(status as ToastStatus, title, description);
+            }
+        },
+    );
 }
