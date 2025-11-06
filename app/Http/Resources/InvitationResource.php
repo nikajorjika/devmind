@@ -31,6 +31,7 @@ class InvitationResource extends JsonResource
 
             'is_expired' => $this->isExpired(),
             'is_pending' => $this->isPending(),
+            'revoked_at' => $this->revoked_at?->toISOString(),
         ];
     }
 }

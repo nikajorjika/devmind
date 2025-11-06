@@ -26,7 +26,10 @@ class Workspace extends Tenant
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_workspace');
+        return $this->belongsToMany(User::class, 'memberships')
+            ->using(Membership::class)
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
 

@@ -6,8 +6,6 @@ use App\Actions\Workspace\ActivateWorkspace;
 use App\Enums\Workspace\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Workspace\StoreWorkspaceRequest;
-use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class StoreWorkspaceController extends Controller

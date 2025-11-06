@@ -23,7 +23,7 @@ class MemberResource extends JsonResource
 
         // Roles filtered to current workspace (only if roles are loaded)
         $rolesCollection = collect($this->whenLoaded('roles') ?? [])
-            ->filter(fn ($role) => (int) data_get($role, 'pivot.workspace_id') === (int) $workspaceId)
+            ->filter(fn($role) => (int) data_get($role, 'pivot.workspace_id') === (int) $workspaceId)
             ->values();
 
         $primaryRole = $rolesCollection->first();
@@ -32,10 +32,12 @@ class MemberResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'email_verified' => ! is_null($this->email_verified_at),
+            'email_verified' => !is_null($this->email_verified_at),
             'role' => data_get($primaryRole, 'name'),
             'is_owner' => (bool) $rolesCollection->firstWhere('name', 'Owner'),
-            'two_factor_enabled' => ! is_null($this->two_factor_confirmed_at),
+            'two_factor_enabled' => !is_null($this->two_factor_confirmed_at),
+            'joined_at' => $this->pivot->created_at ?? null,
+            'status' => $this->pivot->status ?? null,
         ];
     }
 }

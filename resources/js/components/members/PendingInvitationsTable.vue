@@ -1,5 +1,6 @@
 <!-- resources/js/components/members/PendingInvitationsTable.vue -->
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -8,16 +9,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { computed } from 'vue';
 import { Invitation } from '@/types';
+import { computed } from 'vue';
 
 const props = defineProps<{
     invitations?: { data?: Invitation[] } | Invitation[];
 }>();
 
 const list = computed<Invitation[]>(() => {
-    // Support both array and paginator-like shape
     if (Array.isArray(props.invitations)) return props.invitations;
     return props.invitations?.data ?? [];
 });
@@ -26,6 +25,12 @@ const emits = defineEmits<{
     (e: 'resend', id: Invitation['id']): void;
     (e: 'revoke', id: Invitation['id']): void;
 }>();
+
+const dateFmt = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+});
 
 function resend(id: Invitation['id']) {
     emits('resend', id);
@@ -57,8 +62,8 @@ function revoke(id: Invitation['id']) {
                         <TableHead>Invited At</TableHead>
                         <TableHead>Expires</TableHead>
                         <TableHead class="w-[160px] text-right"
-                            >Actions</TableHead
-                        >
+                            >Actions
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -72,19 +77,21 @@ function revoke(id: Invitation['id']) {
                     </TableRow>
 
                     <TableRow v-for="inv in list" :key="inv.id">
-                        <TableCell class="font-medium">{{
-                            inv.email
-                        }}</TableCell>
+                        <TableCell class="font-medium"
+                            >{{ inv.email }}
+                        </TableCell>
                         <TableCell>{{ inv.role_name }}</TableCell>
                         <TableCell>{{ inv.inviter?.name ?? '—' }}</TableCell>
-                        <TableCell>{{
-                            inv.created_at
-                                ? new Date(inv.created_at).toLocaleString()
-                                : '—'
-                        }}</TableCell>
+                        <TableCell
+                            >{{
+                                inv.created_at
+                                    ? dateFmt.format(new Date(inv.created_at))
+                                    : '—'
+                            }}
+                        </TableCell>
                         <TableCell>
                             <span v-if="inv.expires_at">{{
-                                new Date(inv.expires_at).toLocaleDateString()
+                                dateFmt.format(new Date(inv.expires_at))
                             }}</span>
                             <span v-else>—</span>
                         </TableCell>
@@ -94,14 +101,14 @@ function revoke(id: Invitation['id']) {
                                     variant="outline"
                                     size="sm"
                                     @click="resend(inv.id)"
-                                    >Resend</Button
-                                >
+                                    >Resend
+                                </Button>
                                 <Button
                                     variant="destructive"
                                     size="sm"
                                     @click="revoke(inv.id)"
-                                    >Revoke</Button
-                                >
+                                    >Revoke
+                                </Button>
                             </div>
                         </TableCell>
                     </TableRow>

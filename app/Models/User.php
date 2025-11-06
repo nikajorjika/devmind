@@ -62,7 +62,10 @@ class User extends Authenticatable
      */
     public function workspaces(): BelongsToMany
     {
-        return $this->belongsToMany(Workspace::class)->withTimestamps();
+        return $this->belongsToMany(Workspace::class, 'memberships')
+            ->using(Membership::class)
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     /**
@@ -73,7 +76,6 @@ class User extends Authenticatable
     public function currentWorkspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class);
-
     }
 
 }

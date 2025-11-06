@@ -42,53 +42,30 @@ export interface Member {
     id: number;
     name: string;
     email: string;
-    status: string;
     email_verified: boolean;
-    created_at: string; // ISO8601
-    updated_at: string | null; // ISO8601
-
-    workspace_id: number | null;
-    membership: MemberMembership;
-
-    role: string; // primary role in current workspace
-    role_id: number;
+    avatar: string;
+    role: string;
     is_owner: boolean;
-
-    roles: MemberRole[];
-
     two_factor_enabled: boolean;
+    joined_at: string | null;
+    status: string;
 }
 
 export interface Invitation {
     id: number;
-    workspace_id: number;
-    inviter_id: number;
-
     email: string;
     role_name: string;
-
-    token: string; // ULID string
-    expires_at: string | null; // ISO timestamp
-    accepted_at: string | null;
-    accepted_by: number | null;
-    revoked_at: string | null;
-
-    status: 'pending' | 'accepted' | 'revoked' | string; // fallback for future statuses
-    meta: Record<string, any> | null;
-
+    status: 'pending' | 'accepted' | 'revoked' | string;
+    expires_at: string | null;
     created_at: string;
-    updated_at: string;
-
-    inviter ? : {
-        id: number
-        name: string
-        email: string
+    inviter?: {
+        id: number;
+        name: string;
+        email: string;
     };
-    accepted_user ? : {
-        id: number
-        name: string
-        email: string
-    };
+    revoked_at: string | null;
+    is_expired: boolean;
+    is_pending: boolean;
 }
 
 export interface MembersResource {
@@ -111,13 +88,13 @@ type ToastStatus = 'success' | 'error' | 'warning' | 'info' | 'default';
 
 export type ToastPayload =
     | {
-    status?: ToastStatus;
-    title?: string;
-    message?: string;
-    description?: string;
-    // anything vue-sonner accepts (duration, closeButton, action, etc.)
-    [key: string]: unknown;
-}
+          status?: ToastStatus;
+          title?: string;
+          message?: string;
+          description?: string;
+          // anything vue-sonner accepts (duration, closeButton, action, etc.)
+          [key: string]: unknown;
+      }
     | string;
 
 export interface FlashProps extends SimpleFlash {

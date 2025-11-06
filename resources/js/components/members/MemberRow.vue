@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Member } from '@/types';
@@ -52,10 +52,6 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
         <TableCell>
             <div class="flex items-center gap-3">
                 <Avatar class="h-8 w-8">
-                    <AvatarImage
-                        :src="props.member.avatar || '/placeholder.svg'"
-                        :alt="props.member.name"
-                    />
                     <AvatarFallback
                         >{{ initials(props.member.name) }}
                     </AvatarFallback>
@@ -94,7 +90,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
         <!-- Joined -->
         <TableCell>
             <span class="text-sm text-muted-foreground">
-                {{ dateFmt.format(new Date(props.member.created_at)) }}
+                {{ dateFmt.format(new Date(props.member.joined_at)) }}
             </span>
         </TableCell>
 
