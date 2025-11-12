@@ -264,6 +264,30 @@ test('already declined invitation returns error', function () {
     $response->assertSessionHas('flash.title', 'Invitation invalid');
 });
 
+test('approve redirects to intended url when set in session', function () {
+    $inviter = User::factory()->withWorkspace()->create();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $invitation = Invitation::create([
+        'workspace_id' => $inviter->current_workspace_id,
+        'inviter_id' => $inviter->id,
+        'email' => 'invitee@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => InvitationStatus::PENDING->value,
+    ]);
+
+    // Set intended URL in session
+    session()->put('url.intended', '/some-intended-page');
+
+    $response = $this->actingAs($invitee)->post(route('invitation.approve', $invitation->token));
+
+    $response->assertRedirect('/some-intended-page');
+    $response->assertSessionHas('flash.status', 'success');
+    expect(session()->has('url.intended'))->toBeFalse();
+});
+
 test('cannot use same token twice from different users', function () {
     $inviter = User::factory()->withWorkspace()->create();
     $invitee = User::factory()->create(['email' => 'invitee@example.com']);
@@ -288,4 +312,39 @@ test('cannot use same token twice from different users', function () {
     // Invitation should still be pending
     $invitation->refresh();
     expect($invitation->status)->toBe(InvitationStatus::PENDING);
+});
+
+test('invitation model relationships work correctly', function () {
+    $inviter = User::factory()->withWorkspace()->create();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $invitation = Invitation::create([
+        'workspace_id' => $inviter->current_workspace_id,
+        'inviter_id' => $inviter->id,
+        'email' => 'invitee@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => InvitationStatus::PENDING->value,
+    ]);
+
+    // Test inviter relationship
+    expect($invitation->inviter->id)->toBe($inviter->id);
+    expect($invitation->inviter->name)->toBe($inviter->name);
+
+    // Test workspace relationship
+    expect($invitation->workspace->id)->toBe($inviter->current_workspace_id);
+
+    // Accept invitation to test invitee relationship
+    $invitation->update([
+        'status' => InvitationStatus::ACCEPTED->value,
+        'accepted_at' => now(),
+        'accepted_by' => $invitee->id,
+    ]);
+
+    $invitation->refresh();
+    
+    // Test invitee relationship
+    expect($invitation->invitee->id)->toBe($invitee->id);
+    expect($invitation->invitee->email)->toBe($invitee->email);
 });
