@@ -1,6 +1,4 @@
-<!-- resources/js/components/members/PendingInvitationsTable.vue -->
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -12,6 +10,8 @@ import {
 import { Invitation } from '@/types';
 import { computed } from 'vue';
 
+import InvitationActions from '@/components/members/InvitationActions.vue';
+
 const props = defineProps<{
     invitations?: { data?: Invitation[] } | Invitation[];
 }>();
@@ -21,24 +21,11 @@ const list = computed<Invitation[]>(() => {
     return props.invitations?.data ?? [];
 });
 
-const emits = defineEmits<{
-    (e: 'resend', id: Invitation['id']): void;
-    (e: 'revoke', id: Invitation['id']): void;
-}>();
-
 const dateFmt = new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
 });
-
-function resend(id: Invitation['id']) {
-    emits('resend', id);
-}
-
-function revoke(id: Invitation['id']) {
-    emits('revoke', id);
-}
 </script>
 
 <template>
@@ -96,20 +83,7 @@ function revoke(id: Invitation['id']) {
                             <span v-else>—</span>
                         </TableCell>
                         <TableCell class="text-right">
-                            <div class="flex justify-end gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    @click="resend(inv.id)"
-                                    >Resend
-                                </Button>
-                                <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    @click="revoke(inv.id)"
-                                    >Revoke
-                                </Button>
-                            </div>
+                            <InvitationActions :invitation="inv" />
                         </TableCell>
                     </TableRow>
                 </TableBody>

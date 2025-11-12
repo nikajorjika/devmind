@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { store } from '@/routes/workspace'; // Wayfinder action (POST)
+import { store } from '@/routes/workspace';
 import { Form } from '@inertiajs/vue3';
 import { Loader2, Upload } from 'lucide-vue-next';
 import { computed, onBeforeUnmount, ref } from 'vue';

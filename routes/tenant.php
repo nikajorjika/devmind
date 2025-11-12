@@ -17,8 +17,11 @@ Route::prefix('members')->group(function () {
 
 Route::prefix('invitation')->group(function () {
     Route::post('/create', InviteMemberController::class)->name('invitationCreate');
-    Route::post('/{invitation}/resend', ResendInvitationController::class)->name('invitationResend');
-    Route::delete('/{invitation}/revoke', RevokeInvitationController::class)->name('invitationRevoke');
+    Route::post('/{invitation}/resend', ResendInvitationController::class)
+        ->name('invitationResend')
+        ->middleware('throttle:resend-invitation');
+    Route::delete('/{invitation}/revoke', RevokeInvitationController::class)
+        ->name('invitationRevoke');
 });
 
 require __DIR__.'/settings.php';

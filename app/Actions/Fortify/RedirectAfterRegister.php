@@ -5,10 +5,10 @@ namespace App\Actions\Fortify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Inertia\Inertia;
-use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class RedirectAfterLogin implements LoginResponse
+class RedirectAfterRegister implements RegisterResponse
 {
     /**
      * Redirect User after login

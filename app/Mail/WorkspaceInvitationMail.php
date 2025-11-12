@@ -42,7 +42,7 @@ class WorkspaceInvitationMail extends Mailable
                 'workspaceName' => $this->invitation->workspace->name,
                 'roleName' => $this->invitation->role_name,
                 'expiresAt' => $this->invitation->expires_at,
-                'acceptUrl' => url('/invitations/accept/'.$this->invitation->token),
+                'acceptUrl' => route('invitation.join', $this->invitation->token),
             ],
         );
     }
