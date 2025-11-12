@@ -7,6 +7,8 @@ enum InvitationStatus: string
     case PENDING = 'pending';
     case ACCEPTED = 'accepted';
     case REVOKED = 'revoked';
+
+    case DECLINED = 'declined';
     case EXPIRED = 'expired';
 
     public function description(): string
@@ -16,6 +18,7 @@ enum InvitationStatus: string
             self::ACCEPTED => 'Invitation has been accepted by the invitee.',
             self::REVOKED => 'Invitation has been revoked by the inviter.',
             self::EXPIRED => 'Invitation has expired and is no longer valid.',
+            self::DECLINED => 'Invitation has been declined by the invitee.',
         };
     }
 
@@ -26,6 +29,7 @@ enum InvitationStatus: string
             self::ACCEPTED => 'Accepted',
             self::REVOKED => 'Revoked',
             self::EXPIRED => 'Expired',
+            self::DECLINED => 'Declined',
         };
     }
 }

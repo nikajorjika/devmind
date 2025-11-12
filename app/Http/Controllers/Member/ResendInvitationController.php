@@ -2,34 +2,40 @@
 
 namespace App\Http\Controllers\Member;
 
+use App\Enums\Workspace\Capabilities;
 use App\Events\InvitationCreated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Member\ResendInvitationRequest;
 use App\Models\Invitation;
 use Illuminate\Http\Request;
 
 class ResendInvitationController extends Controller
 {
-    public function __invoke(Request $request, Invitation $invitation)
+    public function __invoke(ResendInvitationRequest $request, Invitation $invitation)
     {
-        // Ensure the invitation belongs to the current workspace
-        if ($invitation->workspace_id !== $request->session()->get('current_workspace_id')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Ensure the invitation is still pending
-        if (!$invitation->isPending()) {
-            return redirect()->back()->withErrors([
-                'invitation' => 'This invitation cannot be resent because it is no longer pending.',
+        if (!$request->canPerformAction($invitation)) {
+            return back()->with('flash', [
+                'status' => 'error',
+                'title' => 'Cannot resend invitation',
+                'description' => 'You do not have permission to resend this invitation.',
             ]);
         }
 
-        // Fire the event to send the email again
+        // State guard
+        if (!$invitation->isPending()) {
+            return back()->with('flash', [
+                'status' => 'warning',
+                'title' => 'Cannot resend',
+                'description' => 'This invitation is no longer pending.',
+            ]);
+        }
+
         event(new InvitationCreated($invitation));
 
-        return redirect()->back()->with('flash', [
+        return back()->with('flash', [
             'status' => 'success',
             'title' => 'Invitation resent',
-            'description' => 'The invitation email has been sent again to '.$invitation->email,
+            'description' => 'We’ve re-sent the invitation to '.$invitation->email.'.',
         ]);
     }
 }

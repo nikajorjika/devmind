@@ -29,6 +29,13 @@ class InvitationResource extends JsonResource
                 ];
             }),
 
+            'workspace' => $this->whenLoaded('workspace', function () {
+                return [
+                    'id' => $this->workspace->id,
+                    'name' => $this->workspace->name,
+                ];
+            }),
+
             'is_expired' => $this->isExpired(),
             'is_pending' => $this->isPending(),
             'revoked_at' => $this->revoked_at?->toISOString(),

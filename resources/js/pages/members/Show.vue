@@ -1,4 +1,3 @@
-<!-- resources/js/Pages/Members/Show.vue -->
 <script setup lang="ts">
 import InviteMemberDialog from '@/components/members/InviteMemberDialog.vue';
 import MembersTable from '@/components/members/MembersTable.vue';

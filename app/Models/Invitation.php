@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\Invitation\InvitationStatus;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Http\Request;
 
 class Invitation extends Model
 {
@@ -23,6 +25,7 @@ class Invitation extends Model
         'accepted_at' => 'datetime',
         'revoked_at' => 'datetime',
         'meta' => 'array',
+        'status' => InvitationStatus::class
     ];
 
     public function workspace(): BelongsTo
@@ -49,7 +52,7 @@ class Invitation extends Model
     protected function active(Builder $query): Builder
     {
         return $query->whereNull('revoked_at')
-            ->where('status', 'pending')
+            ->where('status', InvitationStatus::PENDING->value)
             ->where(function ($q) {
                 $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
             });
@@ -62,9 +65,27 @@ class Invitation extends Model
     }
 
     #[Scope]
+    protected function token(Builder $query, string $token): Builder
+    {
+        return $query->where('token', $token);
+    }
+
+    #[Scope]
     protected function for(Builder $query, string $email): Builder
     {
         return $query->where('email', $email);
+    }
+
+    #[Scope]
+    protected function withInviter(Builder $query): Builder
+    {
+        return $query->with('inviter');
+    }
+
+    #[Scope]
+    protected function withWorkspace(Builder $query): Builder
+    {
+        return $query->with('workspace');
     }
 
     public function isExpired(): bool
@@ -74,7 +95,7 @@ class Invitation extends Model
 
     public function isPending(): bool
     {
-        return $this->status === 'pending' && !$this->isExpired() && !$this->revoked_at;
+        return $this->status === InvitationStatus::PENDING && !$this->isExpired() && !$this->revoked_at;
     }
 
     public function isRevoked(): bool
@@ -85,5 +106,10 @@ class Invitation extends Model
     public function isAccepted(): bool
     {
         return (bool) $this->accepted_at;
+    }
+
+    public function belongsToCurrentWorkspace(Request $request): bool
+    {
+        return (int) $this->workspace_id === (int) $request->session()->get('current_workspace_id');
     }
 }

@@ -13,7 +13,7 @@ test('workspace create page can be rendered', function () {
 
     $response->assertStatus(200);
     $response->assertInertia(fn (Assert $page) => $page
-        ->component('Workspace/Create')
+        ->component('workspace/Create')
     );
 });
 
@@ -26,10 +26,10 @@ test('user can create a workspace', function () {
     ]);
 
     $response->assertRedirect(route('dashboard'));
-    
-    expect($user->workspaces()->count())->toBe(1);
-    expect($user->workspaces()->first()->name)->toBe('Test Workspace');
-    expect($user->workspaces()->first()->subdomain)->toBe('test-workspace');
+
+    expect($user->workspaces()->count())->toBe(1)
+        ->and($user->workspaces()->first()->name)->toBe('Test Workspace')
+        ->and($user->workspaces()->first()->subdomain)->toBe('test-workspace');
 });
 
 test('workspace creation requires name', function () {
@@ -68,7 +68,7 @@ test('user can switch between workspaces', function () {
     $user = User::factory()->create();
     $workspace1 = Workspace::factory()->create();
     $workspace2 = Workspace::factory()->create();
-    
+
     $user->workspaces()->attach([$workspace1->id, $workspace2->id]);
     $user->forceFill(['current_workspace_id' => $workspace1->id])->save();
 
@@ -77,7 +77,7 @@ test('user can switch between workspaces', function () {
     ]);
 
     $response->assertRedirect(route('dashboard'));
-    
+
     expect($user->fresh()->current_workspace_id)->toBe($workspace2->id);
 });
 
@@ -104,7 +104,7 @@ test('user can switch to second workspace after creating first', function () {
     $user = User::factory()->create();
     $workspace1 = Workspace::factory()->create();
     $workspace2 = Workspace::factory()->create();
-    
+
     $user->workspaces()->attach([$workspace1->id, $workspace2->id]);
     $user->forceFill(['current_workspace_id' => $workspace1->id])->save();
 
@@ -113,6 +113,6 @@ test('user can switch to second workspace after creating first', function () {
     ]);
 
     $response->assertRedirect(route('dashboard'));
-    
+
     expect($user->fresh()->current_workspace_id)->toBe($workspace2->id);
 });

@@ -56,12 +56,16 @@ export interface Invitation {
     email: string;
     role_name: string;
     status: 'pending' | 'accepted' | 'revoked' | string;
-    expires_at: string | null;
+    expires_at: string;
     created_at: string;
     inviter?: {
         id: number;
         name: string;
         email: string;
+    };
+    workspace?: {
+        id: number;
+        name: string;
     };
     revoked_at: string | null;
     is_expired: boolean;
