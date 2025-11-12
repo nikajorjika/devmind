@@ -36,7 +36,7 @@ class RejectInvitationController extends Controller
                 ]);
         }
 
-        if ($invitation->status === InvitationStatus::DECLINED->value) {
+        if ($invitation->status === InvitationStatus::DECLINED) {
             return $this->redirectAfterReject();
         }
 

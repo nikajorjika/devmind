@@ -41,7 +41,7 @@ class ApproveInvitationController extends Controller
                 ]);
         }
 
-        if ($invitation->status === InvitationStatus::ACCEPTED->value && $invitation->accepted_by === $user->id) {
+        if ($invitation->status === InvitationStatus::ACCEPTED && $invitation->accepted_by === $user->id) {
             return $this->redirectAfterAccept($request, $invitation);
         }
 
