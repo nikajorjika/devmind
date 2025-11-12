@@ -22,8 +22,7 @@ class InviteMemberRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                'max:255',
-                Rule::unique('users', 'email'),
+                'max:255'
             ],
             'role' => [
                 'required',
