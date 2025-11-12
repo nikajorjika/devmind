@@ -18,7 +18,7 @@ class InvitationResource extends JsonResource
             'id' => $this->id,
             'email' => $this->email,
             'role_name' => $this->role_name,
-            'status' => $this->status,
+            'status' => $this->status->value,
             'expires_at' => $this->expires_at?->toISOString(),
             'created_at' => $this->created_at?->toISOString(),
 

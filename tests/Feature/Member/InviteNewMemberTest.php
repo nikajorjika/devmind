@@ -175,7 +175,7 @@ test('can revoke pending invitation', function () {
 
     $invitation->refresh();
 
-    expect($invitation->status)->toBe(InvitationStatus::REVOKED->value);
+    expect($invitation->status)->toBe(InvitationStatus::REVOKED);
     expect($invitation->revoked_at)->not->toBeNull();
 });
 
