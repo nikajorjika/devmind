@@ -8,7 +8,9 @@ use App\Events\InvitationCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\InviteMemberRequest;
 use App\Models\Invitation;
+use App\Models\Workspace;
 use Illuminate\Support\Str;
+use Spatie\Multitenancy\Contracts\IsTenant;
 
 class InviteMemberController extends Controller
 {
@@ -23,6 +25,13 @@ class InviteMemberController extends Controller
         if ($invitation) {
             return redirect()->back()
                 ->withErrors(['email' => 'An active invitation already exists for this email.']);
+        }
+
+        $alreadyInWorkspace = Workspace::current()->users()->where('email', $data['email'])->exists();
+
+        if ($alreadyInWorkspace) {
+            return redirect()->back()
+                ->withErrors(['email' => 'This user is already a member of the workspace.']);
         }
 
         $invitation = Invitation::create([

@@ -14,18 +14,12 @@ class RevokeInvitationController extends Controller
     public function __invoke(RevokeInvitationRequest $request, Invitation $invitation)
     {
         if (!$request->canPerformAction($invitation)) {
-            return back()->with('flash', [
-                'status' => 'error',
-                'title' => 'Cannot revoke invitation',
-                'description' => 'You do not have permission to revoke this invitation.',
-            ]);
+            abort(403, 'You do not have permission to revoke this invitation.');
         }
 
         if (!$invitation->isPending()) {
-            return back()->with('flash', [
-                'status' => 'warning',
-                'title' => 'Cannot revoke',
-                'description' => 'This invitation is no longer pending.',
+            return back()->withErrors([
+                'invitation' => 'This invitation is no longer pending.',
             ]);
         }
 

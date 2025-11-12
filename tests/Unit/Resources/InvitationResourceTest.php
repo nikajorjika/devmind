@@ -95,6 +95,30 @@ test('InvitationResource includes inviter when loaded', function () {
         ->and($array['inviter']['name'])->toBe($user->name);
 });
 
+test('InvitationResource includes workspace when loaded', function () {
+    $user = User::factory()->withWorkspace()->create();
+
+    $invitation = Invitation::create([
+        'workspace_id' => $user->current_workspace_id,
+        'inviter_id'   => $user->id,
+        'email'        => 'test@example.com',
+        'role_name'    => 'Member',
+        'token'        => Str::ulid(),
+        'expires_at'   => now()->addDays(7),
+        'status'       => 'pending',
+    ]);
+
+    $invitation->load('workspace');
+
+    $array = (new InvitationResource($invitation))->toArray(request());
+
+    expect($array)->toHaveKey('workspace')
+        ->and($array['workspace'])->toBeArray()
+        ->and($array['workspace'])->toHaveKeys(['id', 'name'])
+        ->and($array['workspace']['id'])->toBe($user->currentWorkspace->id)
+        ->and($array['workspace']['name'])->toBe($user->currentWorkspace->name);
+});
+
 test('InvitationResource helper flags for pending, expired, and revoked', function () {
     $user = User::factory()->withWorkspace()->create();
 

@@ -14,19 +14,13 @@ class ResendInvitationController extends Controller
     public function __invoke(ResendInvitationRequest $request, Invitation $invitation)
     {
         if (!$request->canPerformAction($invitation)) {
-            return back()->with('flash', [
-                'status' => 'error',
-                'title' => 'Cannot resend invitation',
-                'description' => 'You do not have permission to resend this invitation.',
-            ]);
+            abort(403, 'You do not have permission to resend this invitation.');
         }
 
         // State guard
         if (!$invitation->isPending()) {
-            return back()->with('flash', [
-                'status' => 'warning',
-                'title' => 'Cannot resend',
-                'description' => 'This invitation is no longer pending.',
+            return back()->withErrors([
+                'invitation' => 'This invitation is no longer pending.',
             ]);
         }
 
