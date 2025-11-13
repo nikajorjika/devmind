@@ -7,6 +7,8 @@ use App\Integrations\VersionControlProviderResolver;
 use App\Models\Workspace;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class GithubIntegrationController extends Controller
 {
@@ -18,14 +20,14 @@ class GithubIntegrationController extends Controller
     /**
      * Redirect to GitHub for authorization.
      */
-    public function redirect(): RedirectResponse
+    public function redirect(): Response
     {
         $workspace = Workspace::current();
         $provider = $this->providerResolver->resolve('github');
 
         $authUrl = $provider->getAuthorizationRedirectUrl($workspace);
 
-        return redirect()->away($authUrl);
+        return Inertia::location($authUrl);
     }
 
     /**
