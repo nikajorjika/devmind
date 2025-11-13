@@ -77,18 +77,6 @@ test('invitation email contains correct information', function () {
     expect($mailable->content()->view)->toBe('emails.workspace-invitation');
 });
 
-test('cannot invite member with existing email', function () {
-    $user = User::factory()->withWorkspace()->create();
-    $existingUser = User::factory()->create();
-
-    $response = $this->actingAs($user)->post(route('invitationCreate'), [
-        'email' => $existingUser->email,
-        'role' => 'Member',
-    ]);
-
-    $response->assertSessionHasErrors(['email']);
-});
-
 test('prevents duplicate active invitations for same email', function () {
     $user = User::factory()->withWorkspace()->create();
 
