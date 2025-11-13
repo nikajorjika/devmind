@@ -27,7 +27,8 @@ class IntegrationsController extends Controller
         $integrations = VersionControlIntegration::where('workspace_id', $workspace->id)
             ->active()
             ->get()
-            ->keyBy('provider');
+            ->keyBy('provider')
+            ->toArray();
 
         // Get available providers
         $availableProviders = collect($this->providerResolver->getAvailableProviders())
@@ -38,7 +39,9 @@ class IntegrationsController extends Controller
                     'key' => $provider->getProviderKey(),
                     'name' => $provider->getDisplayName(),
                 ];
-            });
+            })
+            ->values()
+            ->toArray();
 
         return Inertia::render('integrations/Index', [
             'integrations' => $integrations,

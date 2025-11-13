@@ -6,7 +6,7 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
 beforeEach(function () {
-    $this->user = createUserWithWorkspace();
+    $this->user = User::factory()->withWorkspace()->create();
     $this->workspace = $this->user->currentWorkspace;
     $this->workspace->makeCurrent();
 });

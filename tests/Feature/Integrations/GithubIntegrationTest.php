@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\VersionControlIntegration;
 use Illuminate\Support\Facades\Cache;
 use Saloon\Http\Faking\MockClient;
@@ -9,7 +10,7 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\get;
 
 beforeEach(function () {
-    $this->user = createUserWithWorkspace();
+    $this->user = User::factory()->withWorkspace()->create();
     $this->workspace = $this->user->currentWorkspace;
     $this->workspace->makeCurrent();
 
