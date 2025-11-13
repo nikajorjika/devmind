@@ -12,15 +12,15 @@ beforeEach(function () {
     $this->user = createUserWithWorkspace();
     $this->workspace = $this->user->currentWorkspace;
     $this->workspace->makeCurrent();
-    
+
     config(['services.github.app_name' => 'test-app']);
 });
 
 it('redirects to github for authorization', function () {
     actingAs($this->user);
-    
+
     $response = post(route('integrations.github.redirect'));
-    
+
     $response->assertRedirect();
     $location = $response->headers->get('Location');
     expect($location)->toContain('https://github.com/apps/test-app/installations/new');
@@ -29,20 +29,20 @@ it('redirects to github for authorization', function () {
 
 it('stores state in cache when redirecting', function () {
     actingAs($this->user);
-    
+
     post(route('integrations.github.redirect'));
-    
+
     $cacheKey = "github_oauth_state_{$this->workspace->id}";
     expect(Cache::has($cacheKey))->toBeTrue();
 });
 
 it('handles callback with valid parameters', function () {
     actingAs($this->user);
-    
+
     // Set up state
     $state = hash_hmac('sha256', $this->workspace->id.time(), config('app.key'));
     Cache::put("github_oauth_state_{$this->workspace->id}", $state, now()->addMinutes(10));
-    
+
     // Mock GitHub API responses
     $mockClient = new MockClient([
         MockResponse::make([
@@ -60,23 +60,23 @@ it('handles callback with valid parameters', function () {
             'type' => 'Organization',
         ], 200),
     ]);
-    
+
     \Saloon\Laravel\Facades\Saloon::mockClient($mockClient);
-    
+
     $response = get(route('integrations.github.callback', [
         'installation_id' => 12345,
         'setup_action' => 'install',
         'state' => $state,
     ]));
-    
+
     $response->assertRedirect(route('integrations.index'));
     $response->assertSessionHas('toast.type', 'success');
-    
+
     // Verify integration was created
     $integration = VersionControlIntegration::where('workspace_id', $this->workspace->id)
         ->where('provider', 'github')
         ->first();
-    
+
     expect($integration)->not->toBeNull();
     expect($integration->external_name)->toBe('test-org');
     expect($integration->installation_id)->toBe('12345');
@@ -84,41 +84,41 @@ it('handles callback with valid parameters', function () {
 
 it('handles callback with invalid state', function () {
     actingAs($this->user);
-    
+
     $response = get(route('integrations.github.callback', [
         'installation_id' => 12345,
         'setup_action' => 'install',
         'state' => 'invalid-state',
     ]));
-    
+
     $response->assertRedirect(route('integrations.index'));
     $response->assertSessionHas('toast.type', 'error');
-    
+
     // Verify no integration was created
     $integration = VersionControlIntegration::where('workspace_id', $this->workspace->id)
         ->where('provider', 'github')
         ->first();
-    
+
     expect($integration)->toBeNull();
 });
 
 it('handles callback with missing installation_id', function () {
     actingAs($this->user);
-    
+
     $state = 'test-state';
     Cache::put("github_oauth_state_{$this->workspace->id}", $state, now()->addMinutes(10));
-    
+
     $response = get(route('integrations.github.callback', [
         'state' => $state,
     ]));
-    
+
     $response->assertRedirect(route('integrations.index'));
     $response->assertSessionHas('toast.type', 'error');
 });
 
 it('updates existing integration on reconnect', function () {
     actingAs($this->user);
-    
+
     // Create existing integration
     $existingIntegration = VersionControlIntegration::create([
         'workspace_id' => $this->workspace->id,
@@ -128,11 +128,11 @@ it('updates existing integration on reconnect', function () {
         'installation_id' => 'old-installation',
         'connected_at' => now()->subDays(7),
     ]);
-    
+
     // Set up state
     $state = hash_hmac('sha256', $this->workspace->id.time(), config('app.key'));
     Cache::put("github_oauth_state_{$this->workspace->id}", $state, now()->addMinutes(10));
-    
+
     // Mock GitHub API responses
     $mockClient = new MockClient([
         MockResponse::make([
@@ -150,20 +150,20 @@ it('updates existing integration on reconnect', function () {
             'type' => 'Organization',
         ], 200),
     ]);
-    
+
     \Saloon\Laravel\Facades\Saloon::mockClient($mockClient);
-    
+
     $response = get(route('integrations.github.callback', [
         'installation_id' => 12345,
         'setup_action' => 'install',
         'state' => $state,
     ]));
-    
+
     $response->assertRedirect(route('integrations.index'));
-    
+
     // Verify integration was updated, not duplicated
     expect(VersionControlIntegration::where('workspace_id', $this->workspace->id)->count())->toBe(1);
-    
+
     $integration = VersionControlIntegration::where('workspace_id', $this->workspace->id)->first();
     expect($integration->external_name)->toBe('new-org');
     expect($integration->installation_id)->toBe('12345');
@@ -171,12 +171,12 @@ it('updates existing integration on reconnect', function () {
 
 it('requires authentication for redirect', function () {
     $response = post(route('integrations.github.redirect'));
-    
+
     $response->assertRedirect(route('login'));
 });
 
 it('requires authentication for callback', function () {
     $response = get(route('integrations.github.callback'));
-    
+
     $response->assertRedirect(route('login'));
 });
