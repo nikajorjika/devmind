@@ -28,7 +28,7 @@ class IntegrationsController extends Controller
             ->active()
             ->get()
             ->keyBy('provider')
-            ->toArray();
+            ->map(fn($integration) => $integration->toArray());
 
         // Get available providers
         $availableProviders = collect($this->providerResolver->getAvailableProviders())
@@ -40,8 +40,7 @@ class IntegrationsController extends Controller
                     'name' => $provider->getDisplayName(),
                 ];
             })
-            ->values()
-            ->toArray();
+            ->values();
 
         return Inertia::render('integrations/Index', [
             'integrations' => $integrations,
