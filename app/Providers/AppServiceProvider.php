@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register GithubConnector as singleton
         $this->app->singleton(\App\Integrations\Github\Saloon\GithubConnector::class);
-        
+
         // Register VersionControlProviderResolver as singleton
         $this->app->singleton(\App\Integrations\VersionControlProviderResolver::class);
     }
