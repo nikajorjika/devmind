@@ -10,6 +10,8 @@ use function Pest\Laravel\post;
 use function Pest\Laravel\get;
 
 beforeEach(function () {
+    MockClient::destroyGlobal();
+
     $this->user = User::factory()->withWorkspace()->create();
     $this->workspace = $this->user->currentWorkspace;
     $this->workspace->makeCurrent();
@@ -45,7 +47,7 @@ it('handles callback with valid parameters', function () {
     Cache::put("github_oauth_state_{$this->workspace->id}", $state, now()->addMinutes(10));
 
     // Mock GitHub API responses
-    $mockClient = new MockClient([
+    MockClient::global([
         MockResponse::make([
             'id' => 12345,
             'account' => [
@@ -61,8 +63,6 @@ it('handles callback with valid parameters', function () {
             'type' => 'Organization',
         ], 200),
     ]);
-
-    \Saloon\Laravel\Facades\Saloon::mockClient($mockClient);
 
     $response = get(route('integrations.github.callback', [
         'installation_id' => 12345,
@@ -135,7 +135,7 @@ it('updates existing integration on reconnect', function () {
     Cache::put("github_oauth_state_{$this->workspace->id}", $state, now()->addMinutes(10));
 
     // Mock GitHub API responses
-    $mockClient = new MockClient([
+    MockClient::global([
         MockResponse::make([
             'id' => 12345,
             'account' => [
@@ -151,8 +151,6 @@ it('updates existing integration on reconnect', function () {
             'type' => 'Organization',
         ], 200),
     ]);
-
-    \Saloon\Laravel\Facades\Saloon::mockClient($mockClient);
 
     $response = get(route('integrations.github.callback', [
         'installation_id' => 12345,
