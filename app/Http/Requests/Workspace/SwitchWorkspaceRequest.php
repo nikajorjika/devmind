@@ -31,8 +31,6 @@ class SwitchWorkspaceRequest extends FormRequest
     /**
      * Get the workspace instance for the given
      * workspace ID that belongs to current user.
-     *
-     * @return Workspace|null
      */
     public function workspace(): ?Workspace
     {

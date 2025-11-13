@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\Workspace\Capabilities;
-use App\Enums\Workspace\RoleEnum;
 use App\Models\Workspace;
 use Closure;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,7 +24,6 @@ class HandlesInertiaTenantRequests
 
         return $next($request);
     }
-
 
     protected function getAvailableRoles(): Collection
     {

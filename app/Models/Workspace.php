@@ -16,7 +16,7 @@ class Workspace extends Tenant
     protected $fillable = [
         'name',
         'subdomain',
-        'database'
+        'database',
     ];
 
     /**
@@ -31,7 +31,6 @@ class Workspace extends Tenant
             ->withPivot('status')
             ->withTimestamps();
     }
-
 
     /**
      * Get the invitations for the workspace.

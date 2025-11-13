@@ -28,5 +28,4 @@ enum RoleEnum: string
             self::GUEST => 'Guest',
         };
     }
-
 }

@@ -36,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 EnsureTenantActivated::class,
                 NeedsTenant::class,
                 EnsureValidTenantSession::class,
-                HandlesInertiaTenantRequests::class
+                HandlesInertiaTenantRequests::class,
             ]);
 
     })

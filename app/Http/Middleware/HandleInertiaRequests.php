@@ -2,16 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\Workspace\Capabilities;
-use App\Enums\Workspace\RoleEnum;
-use App\Models\Workspace;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
-use Spatie\Permission\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -50,23 +43,17 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'workspaces' => $request->user()?->workspaces,
             ],
-            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'flash' => $this->getSessionNotification($request)
+            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'flash' => $this->getSessionNotification($request),
         ];
     }
 
-    /**
-     * @param  Request  $request
-     *
-     * @return \Closure
-     */
     public function getSessionNotification(Request $request): \Closure
     {
-        return fn() => tap($request->session()->pull('flash'), function (&$f) {
+        return fn () => tap($request->session()->pull('flash'), function (&$f) {
             if (is_array($f)) {
                 $f['id'] ??= (string) Str::uuid();
             }
         });
     }
-
 }

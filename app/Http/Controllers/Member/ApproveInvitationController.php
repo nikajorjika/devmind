@@ -6,10 +6,8 @@ use App\Enums\Invitation\InvitationStatus;
 use App\Enums\Member\MemberStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
-use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
 
 class ApproveInvitationController extends Controller
 {
@@ -21,7 +19,7 @@ class ApproveInvitationController extends Controller
         $invitation = Invitation::query()
             ->where('token', $token)
             ->firstOrFail();
-        if (!$invitation || !$invitation->isPending() || $invitation->isExpired()) {
+        if (! $invitation || ! $invitation->isPending() || $invitation->isExpired()) {
             return redirect()
                 ->route('invitation.accept', $token)
                 ->with('flash', [
@@ -44,7 +42,6 @@ class ApproveInvitationController extends Controller
         if ($invitation->status === InvitationStatus::ACCEPTED && $invitation->accepted_by === $user->id) {
             return $this->redirectAfterAccept($request, $invitation);
         }
-
 
         DB::transaction(function () use ($invitation, $user) {
             setPermissionsTeamId($invitation->workspace_id);

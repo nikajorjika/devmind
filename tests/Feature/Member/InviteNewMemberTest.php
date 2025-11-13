@@ -2,7 +2,6 @@
 
 use App\Enums\Invitation\InvitationStatus;
 use App\Events\InvitationCreated;
-use App\Listeners\SendInvitationListener;
 use App\Mail\WorkspaceInvitationMail;
 use App\Models\Invitation;
 use App\Models\User;

@@ -40,6 +40,7 @@ class SyncRoles extends Command
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->info('Roles synchronized successfully.');
+
         return self::SUCCESS;
     }
 
@@ -93,7 +94,7 @@ class SyncRoles extends Command
             // Sync role permissions
             $role->syncPermissions($permissionNames);
 
-            $this->info("Role '{$roleName}' synced with " . count($permissionNames) . ' permissions.');
+            $this->info("Role '{$roleName}' synced with ".count($permissionNames).' permissions.');
         }
     }
 }

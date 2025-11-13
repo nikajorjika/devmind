@@ -343,7 +343,7 @@ test('invitation model relationships work correctly', function () {
     ]);
 
     $invitation->refresh();
-    
+
     // Test invitee relationship
     expect($invitation->invitee->id)->toBe($invitee->id);
     expect($invitation->invitee->email)->toBe($invitee->email);

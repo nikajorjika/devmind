@@ -25,7 +25,7 @@ class ActivateWorkspace
         $user ??= Auth::user();
         $workspaceId = $workspace->getKey();
 
-        if ($ensureMember && $user && !$user->workspaces()->whereKey($workspaceId)->exists()) {
+        if ($ensureMember && $user && ! $user->workspaces()->whereKey($workspaceId)->exists()) {
             throw new AuthorizationException('You are not a member of this workspace.');
         }
 

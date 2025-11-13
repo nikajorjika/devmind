@@ -13,12 +13,12 @@ test('InvitationResource transforms invitation data correctly', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'test@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'test@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'pending',
     ]);
 
     $array = (new InvitationResource($invitation))->toArray(request());
@@ -52,12 +52,12 @@ test('InvitationResource does not expose sensitive fields', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'test@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'test@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'pending',
     ]);
 
     $array = (new InvitationResource($invitation))->toArray(request());
@@ -76,12 +76,12 @@ test('InvitationResource includes inviter when loaded', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'test@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'test@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'pending',
     ]);
 
     $invitation->load('inviter');
@@ -100,12 +100,12 @@ test('InvitationResource includes workspace when loaded', function () {
 
     $invitation = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'test@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'test@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'pending',
     ]);
 
     $invitation->load('workspace');
@@ -125,12 +125,12 @@ test('InvitationResource helper flags for pending, expired, and revoked', functi
     // Pending (future expiry)
     $pending = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'pending@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'pending@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'pending',
     ]);
     $pendingArr = (new InvitationResource($pending))->toArray(request());
     expect($pendingArr['is_pending'])->toBeTrue()
@@ -140,12 +140,12 @@ test('InvitationResource helper flags for pending, expired, and revoked', functi
     // Expired (past expiry)
     $expired = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'expired@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->subDay(),
-        'status'       => 'pending',
+        'inviter_id' => $user->id,
+        'email' => 'expired@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->subDay(),
+        'status' => 'pending',
     ]);
     $expiredArr = (new InvitationResource($expired))->toArray(request());
     expect($expiredArr['is_expired'])->toBeTrue()
@@ -154,13 +154,13 @@ test('InvitationResource helper flags for pending, expired, and revoked', functi
     // Revoked (explicitly revoked)
     $revoked = Invitation::create([
         'workspace_id' => $user->current_workspace_id,
-        'inviter_id'   => $user->id,
-        'email'        => 'revoked@example.com',
-        'role_name'    => 'Member',
-        'token'        => Str::ulid(),
-        'expires_at'   => now()->addDays(7),
-        'status'       => 'revoked',
-        'revoked_at'   => now(),
+        'inviter_id' => $user->id,
+        'email' => 'revoked@example.com',
+        'role_name' => 'Member',
+        'token' => Str::ulid(),
+        'expires_at' => now()->addDays(7),
+        'status' => 'revoked',
+        'revoked_at' => now(),
     ]);
     $revokedArr = (new InvitationResource($revoked))->toArray(request());
     expect($revokedArr['status'])->toBe('revoked')

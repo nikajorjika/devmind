@@ -12,10 +12,6 @@ class RedirectAfterLogin implements LoginResponse
 {
     /**
      * Redirect User after login
-     *
-     * @param $request
-     *
-     * @return Redirector|Response|RedirectResponse
      */
     public function toResponse($request): Redirector|Response|RedirectResponse
     {

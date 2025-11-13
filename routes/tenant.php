@@ -8,9 +8,7 @@ use App\Http\Controllers\Member\ShowMembersController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::get('dashboard', DashboardController::class)->name('dashboard');
-
 
 Route::prefix('members')->group(function () {
     Route::get('/', ShowMembersController::class)->name('showMembers');
@@ -37,4 +35,3 @@ Route::prefix('developers')->group(function () {
 });
 
 require __DIR__.'/settings.php';
-

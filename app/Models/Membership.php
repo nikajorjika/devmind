@@ -10,7 +10,7 @@ class Membership extends Pivot
     protected $fillable = [
         'user_id',
         'workspace_id',
-        'status'
+        'status',
     ];
 
     public function casts(): array

@@ -16,9 +16,7 @@ class WorkspaceInvitationMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Invitation $invitation)
-    {
-    }
+    public function __construct(public Invitation $invitation) {}
 
     /**
      * Get the message envelope.

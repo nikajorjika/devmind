@@ -25,7 +25,7 @@ class Invitation extends Model
         'accepted_at' => 'datetime',
         'revoked_at' => 'datetime',
         'meta' => 'array',
-        'status' => InvitationStatus::class
+        'status' => InvitationStatus::class,
     ];
 
     public function workspace(): BelongsTo
@@ -43,11 +43,6 @@ class Invitation extends Model
         return $this->belongsTo(User::class, 'accepted_by');
     }
 
-    /**
-     * @param  Builder  $query
-     *
-     * @return Builder
-     */
     #[Scope]
     protected function active(Builder $query): Builder
     {
@@ -95,7 +90,7 @@ class Invitation extends Model
 
     public function isPending(): bool
     {
-        return $this->status === InvitationStatus::PENDING && !$this->isExpired() && !$this->revoked_at;
+        return $this->status === InvitationStatus::PENDING && ! $this->isExpired() && ! $this->revoked_at;
     }
 
     public function isRevoked(): bool

@@ -10,7 +10,6 @@ use App\Http\Requests\Member\InviteMemberRequest;
 use App\Models\Invitation;
 use App\Models\Workspace;
 use Illuminate\Support\Str;
-use Spatie\Multitenancy\Contracts\IsTenant;
 
 class InviteMemberController extends Controller
 {

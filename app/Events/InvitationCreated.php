@@ -13,7 +13,5 @@ class InvitationCreated
     /**
      * Create a new event instance.
      */
-    public function __construct(public $invitation)
-    {
-    }
+    public function __construct(public $invitation) {}
 }

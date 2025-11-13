@@ -53,9 +53,9 @@ function createUserWithWorkspace(array $userAttributes = [], array $workspaceAtt
 {
     $user = \App\Models\User::factory()->create($userAttributes);
     $workspace = \App\Models\Workspace::factory()->create($workspaceAttributes);
-    
+
     $user->workspaces()->attach($workspace);
     $user->forceFill(['current_workspace_id' => $workspace->id])->save();
-    
+
     return $user->fresh();
 }

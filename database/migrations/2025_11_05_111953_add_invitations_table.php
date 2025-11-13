@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -28,7 +29,7 @@ return new class extends Migration {
             $table->json('meta')->nullable();
 
             $table->unique(['workspace_id', 'email', 'revoked_at'], 'uniq_pending_invite')
-                ->where(fn($q) => $q->where('status', 'pending'));
+                ->where(fn ($q) => $q->where('status', 'pending'));
 
             $table->timestamps();
         });

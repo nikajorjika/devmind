@@ -23,7 +23,7 @@ class EnsureWorkspaceExists
             return $next($request);
         }
 
-        if ($request->header('X-Inertia') && !$request->isMethod('GET')) {
+        if ($request->header('X-Inertia') && ! $request->isMethod('GET')) {
             return Inertia::location(route('workspace.create'));
         }
 

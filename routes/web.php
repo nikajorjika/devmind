@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Member\AcceptInvitationController;
 use App\Http\Controllers\Member\ApproveInvitationController;
 use App\Http\Controllers\Member\JoinInvitationController;
 use App\Http\Controllers\Member\RejectInvitationController;

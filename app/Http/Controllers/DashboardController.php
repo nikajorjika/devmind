@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Workspace\UserStatusEnum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

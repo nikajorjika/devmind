@@ -14,7 +14,6 @@ describe('Helpers functions', function () {
     });
 });
 
-
 describe('subdomain_from_url', function () {
 
     it('extracts a subdomain against non-normalized url', function () {
@@ -124,7 +123,7 @@ describe('subdomain_from_url', function () {
         // Here we just assert we still get the subdomain label back in its ascii/punycode form.
         expect(subdomain_from_url('https://bücher.laravel.test'))
             ->toBe(['bücher']); // Accept either preserved unicode or punycode based on your helper.
-    })->skip(fn() => !function_exists('idn_to_ascii'), 'Skip if IDN not supported in environment');
+    })->skip(fn () => ! function_exists('idn_to_ascii'), 'Skip if IDN not supported in environment');
 
     //
     // Data-driven sweep for a bunch of typical cases

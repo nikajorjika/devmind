@@ -16,7 +16,7 @@ class RejectInvitationController extends Controller
             ->where('token', $token)
             ->firstOrFail();
 
-        if (!$invitation->isPending()) {
+        if (! $invitation->isPending()) {
             return redirect()
                 ->route('invitation.accept', $token)
                 ->with('flash', [

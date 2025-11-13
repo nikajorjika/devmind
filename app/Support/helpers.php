@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
-if (!function_exists('workspace_url')) {
+if (! function_exists('workspace_url')) {
     /**
      * Build a full URL with the given subdomain based on app.url.
      *
@@ -27,27 +27,24 @@ if (!function_exists('workspace_url')) {
     }
 }
 
-
-if (!function_exists('subdomain_from_url')) {
+if (! function_exists('subdomain_from_url')) {
     /**
      * Extract subdomains from a URL.
      *
-     * @param  string  $url
-     * @param  string|null  $baseDomain
      *
-     * @return array|string  Returns array of subdomains (left-to-right) or '' when none
+     * @return array|string Returns array of subdomains (left-to-right) or '' when none
      */
     function subdomain_from_url(string $url, ?string $baseDomain = null): array|string
     {
         $url = strtolower(trim($url));
 
-        if (!str_starts_with($url, 'https://') && !str_starts_with($url, 'http://')) {
+        if (! str_starts_with($url, 'https://') && ! str_starts_with($url, 'http://')) {
             $url = 'https://'.$url;
         }
 
         $host = parse_url($url, PHP_URL_HOST);
 
-        if (!$host) {
+        if (! $host) {
             return '';
         }
 
@@ -69,7 +66,7 @@ if (!function_exists('subdomain_from_url')) {
 
         $basePartsCount = count($baseParts);
 
-        if (!str_ends_with($host, $baseDomain)) {
+        if (! str_ends_with($host, $baseDomain)) {
             $basePartsCount = min(2, count($hostParts));
         }
 

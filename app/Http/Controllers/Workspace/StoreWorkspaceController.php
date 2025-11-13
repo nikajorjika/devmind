@@ -13,9 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 class StoreWorkspaceController extends Controller
 {
     /**
-     * @param  StoreWorkspaceRequest  $request
-     *
      * @return Response
+     *
      * @throws \Exception
      */
     public function __invoke(StoreWorkspaceRequest $request)
@@ -24,7 +23,7 @@ class StoreWorkspaceController extends Controller
         $workspace = Workspace::create($request->validated());
 
         $user->workspaces()->attach($workspace->id, [
-            'status' => MemberStatus::ACTIVE->value
+            'status' => MemberStatus::ACTIVE->value,
         ]);
 
         app(ActivateWorkspace::class)->handle($workspace, $user);

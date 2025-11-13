@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Member;
 
-use App\Enums\Workspace\Capabilities;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvitationResource;
 use App\Http\Resources\MemberResource;
@@ -17,8 +16,8 @@ class ShowMembersController extends Controller
     public function __invoke(Request $request)
     {
         return Inertia::render('members/Show', [
-            'members' => Inertia::defer(fn() => $this->getWorkspaceMembers()),
-            'invitations' => Inertia::defer(fn() => $this->getInvitations()),
+            'members' => Inertia::defer(fn () => $this->getWorkspaceMembers()),
+            'invitations' => Inertia::defer(fn () => $this->getInvitations()),
         ]);
     }
 

@@ -15,10 +15,8 @@ class ResendInvitationRequest extends FormRequest
         return true;
     }
 
-
     public function canPerformAction($invitation): bool
     {
         return $this->user()->can(Capabilities::MEMBER_INVITE) && $invitation->belongsToCurrentWorkspace($this);
     }
-
 }

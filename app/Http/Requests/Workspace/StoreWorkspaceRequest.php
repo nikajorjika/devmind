@@ -28,5 +28,4 @@ class StoreWorkspaceRequest extends FormRequest
             'subdomain' => ['required', 'string', 'max:255', 'unique:workspaces,subdomain'],
         ];
     }
-
 }

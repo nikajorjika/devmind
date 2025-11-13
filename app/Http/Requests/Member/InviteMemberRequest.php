@@ -7,7 +7,6 @@ use App\Enums\Workspace\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use Spatie\Permission\PermissionRegistrar;
 
 class InviteMemberRequest extends FormRequest
 {
@@ -22,7 +21,7 @@ class InviteMemberRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                'max:255'
+                'max:255',
             ],
             'role' => [
                 'required',
@@ -50,17 +49,17 @@ class InviteMemberRequest extends FormRequest
                 $user = $this->user();
                 $role = $this->input('role');
 
-                if (!$user->hasPermissionTo(Capabilities::MEMBER_INVITE->value)) {
+                if (! $user->hasPermissionTo(Capabilities::MEMBER_INVITE->value)) {
                     $validator->errors()->add('email', 'You are not allowed to invite members.');
                 }
 
                 if ($role === RoleEnum::OWNER->value &&
-                    !$user->hasPermissionTo(Capabilities::MEMBER_MAKE_OWNER->value)) {
+                    ! $user->hasPermissionTo(Capabilities::MEMBER_MAKE_OWNER->value)) {
                     $validator->errors()->add('role', 'You are not allowed to assign the Owner role.');
                 }
 
                 if ($role === RoleEnum::ADMIN->value &&
-                    !$user->hasPermissionTo(Capabilities::MEMBER_MAKE_ADMIN->value)) {
+                    ! $user->hasPermissionTo(Capabilities::MEMBER_MAKE_ADMIN->value)) {
                     $validator->errors()->add('role', 'You are not allowed to assign the Admin role.');
                 }
             },

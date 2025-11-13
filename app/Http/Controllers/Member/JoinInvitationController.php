@@ -13,7 +13,7 @@ class JoinInvitationController extends Controller
     {
         $invitation = Invitation::token($token)->firstOrFail();
 
-        if (!$invitation || !$invitation->isPending() || $invitation->isExpired()) {
+        if (! $invitation || ! $invitation->isPending() || $invitation->isExpired()) {
             return redirect()->route('login')->with('flash', [
                 'status' => 'warning',
                 'title' => 'Invitation invalid',

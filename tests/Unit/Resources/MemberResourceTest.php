@@ -18,7 +18,7 @@ function fakeRoles(object $model, array $roles): void
     // Attach a lightweight roles relation (bypassing Spatie internals for unit scope)
     // Each role item: ['name' => 'Owner', 'workspace_id' => 123]
     $model->setRelation('roles', collect(array_map(fn ($r) => (object) [
-        'name'  => $r['name'],
+        'name' => $r['name'],
         'pivot' => (object) ['workspace_id' => $r['workspace_id']],
     ], $roles)));
 }
@@ -33,8 +33,8 @@ test('MemberResource transforms user data correctly and exposes joined_at & stat
     // Provide the pivot context expected by the resource
     fakePivot($user, [
         'workspace_id' => $workspaceId,
-        'created_at'   => $joinedAt,
-        'status'       => $status,
+        'created_at' => $joinedAt,
+        'status' => $status,
     ]);
 
     $array = (new MemberResource($user))->toArray(request());
@@ -66,8 +66,8 @@ test('MemberResource includes role information when roles are loaded and scopes 
     // Provide pivot so the resource can resolve workspace context
     fakePivot($user, [
         'workspace_id' => $currentWorkspaceId,
-        'created_at'   => now(),
-        'status'       => 'active',
+        'created_at' => now(),
+        'status' => 'active',
     ]);
 
     // Fake two roles: one for another workspace, one for current
@@ -91,8 +91,8 @@ test('MemberResource returns null role and false is_owner when roles are not loa
     // Pivot present but roles NOT loaded
     fakePivot($user, [
         'workspace_id' => $user->current_workspace_id,
-        'created_at'   => now(),
-        'status'       => 'active',
+        'created_at' => now(),
+        'status' => 'active',
     ]);
 
     $array = (new MemberResource($user))->toArray(request());
@@ -104,18 +104,18 @@ test('MemberResource returns null role and false is_owner when roles are not loa
 
 test('MemberResource handles two factor authentication status', function () {
     $userWithout2FA = User::factory()->withoutTwoFactor()->withWorkspace()->create();
-    $userWith2FA    = User::factory()->withWorkspace()->create();
+    $userWith2FA = User::factory()->withWorkspace()->create();
 
     // Provide minimal pivot for both (so other fields serialize consistently)
     fakePivot($userWithout2FA, [
         'workspace_id' => $userWithout2FA->current_workspace_id,
-        'created_at'   => now(),
-        'status'       => 'active',
+        'created_at' => now(),
+        'status' => 'active',
     ]);
     fakePivot($userWith2FA, [
         'workspace_id' => $userWith2FA->current_workspace_id,
-        'created_at'   => now(),
-        'status'       => 'active',
+        'created_at' => now(),
+        'status' => 'active',
     ]);
 
     $resourceWithout = new MemberResource($userWithout2FA);

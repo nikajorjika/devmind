@@ -1,7 +1,5 @@
 <?php
 
-use App\Tenant\Finders\SessionTenantFinder;
-use App\Tenant\Finders\SubdomainWorkspaceFinder;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
