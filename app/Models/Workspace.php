@@ -41,4 +41,12 @@ class Workspace extends Tenant
     {
         return $this->hasMany(Invitation::class);
     }
+
+    /**
+     * Get the current workspace instance.
+     */
+    public static function current(): ?self
+    {
+        return self::current();
+    }
 }
