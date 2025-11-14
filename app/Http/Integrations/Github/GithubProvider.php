@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Integrations\Github;
+namespace App\Http\Integrations\Github;
 
-use App\Integrations\Contracts\VersionControlProvider;
-use App\Integrations\Github\Saloon\GithubConnector;
-use App\Integrations\Github\Saloon\Requests\GetInstallationRequest;
-use App\Integrations\Github\Saloon\Requests\GetOrganizationRequest;
+use App\Http\Integrations\Contracts\VersionControlProvider;
+use App\Http\Integrations\Github\Requests\GetInstallationRequest;
+use App\Http\Integrations\Github\Requests\GetOrganizationRequest;
+use App\Http\Integrations\Github\Requests\GetUserRequest;
 use App\Models\VersionControlIntegration;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
@@ -38,14 +38,17 @@ class GithubProvider implements VersionControlProvider
         $appName = config('services.github.app_name');
         $state = $this->generateState($workspace);
 
-        // Store state in cache for verification
         Cache::put("github_oauth_state_{$workspace->id}", $state, now()->addMinutes(10));
 
         return "https://github.com/apps/{$appName}/installations/new?state={$state}";
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handleCallback(Request $request, Workspace $workspace): VersionControlIntegration
     {
+
         // Validate state
         $state = $request->query('state');
         $cachedState = Cache::pull("github_oauth_state_{$workspace->id}");
@@ -58,13 +61,21 @@ class GithubProvider implements VersionControlProvider
         $installationId = $request->query('installation_id');
         $setupAction = $request->query('setup_action');
 
-        if (! $installationId) {
+        if (!$installationId) {
             throw new \Exception('Missing installation_id parameter');
         }
 
-        // Fetch installation details from GitHub
         $installationData = $this->fetchInstallationDetails($installationId);
-        $organizationData = $this->fetchOrganizationDetails($installationData['account']['login']);
+
+        $account = $installationData['account'] ?? null;
+        $login = $account['login'] ?? null;
+        $type = $account['type'] ?? null;
+
+        if ($type !== 'Organization') {
+            throw new \Exception('GitHub integration must be installed on an organization account');
+        }
+
+        $organizationData = $this->fetchOrganizationDetails($installationId, $login);
 
         // Create or update the integration
         return VersionControlIntegration::updateOrCreate(
@@ -101,12 +112,10 @@ class GithubProvider implements VersionControlProvider
      */
     protected function fetchInstallationDetails(string $installationId): array
     {
-        // TODO: In production, use JWT token for app authentication
-        // For now, we'll use the API with installation token
         $response = $this->connector
             ->send(new GetInstallationRequest($installationId));
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             throw new \Exception('Failed to fetch installation details from GitHub');
         }
 
@@ -116,12 +125,12 @@ class GithubProvider implements VersionControlProvider
     /**
      * Fetch organization details from GitHub API.
      */
-    protected function fetchOrganizationDetails(string $organizationLogin): array
+    protected function fetchOrganizationDetails(string $installationId, string $organizationLogin): array
     {
         $response = $this->connector
-            ->send(new GetOrganizationRequest($organizationLogin));
+            ->send(new GetOrganizationRequest($installationId, $organizationLogin));
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             throw new \Exception('Failed to fetch organization details from GitHub');
         }
 

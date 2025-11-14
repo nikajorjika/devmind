@@ -90,7 +90,7 @@ const isConnected = (providerKey: string): boolean => {
                             <p class="mb-4 text-sm text-muted-foreground">
                                 Connect your DevMind organization to a GitHub organization via the DevMind GitHub App.
                             </p>
-                            <Button @click="connectGithub" class="w-full">
+                            <Button @click="connectGithub" class="w-full cursor-pointer">
                                 <Github class="mr-2 h-4 w-4" />
                                 Connect GitHub
                             </Button>

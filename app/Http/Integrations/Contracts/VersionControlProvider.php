@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Integrations\Contracts;
+namespace App\Http\Integrations\Contracts;
 
 use App\Models\VersionControlIntegration;
 use App\Models\Workspace;

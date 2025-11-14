@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Integrations\Github\Services\GithubAppJwtService;
+use App\Http\Integrations\Github\Services\GithubInstallationTokenService;
 use App\Models\User;
 use App\Models\VersionControlIntegration;
 use Illuminate\Support\Facades\Cache;
@@ -17,6 +19,15 @@ beforeEach(function () {
     $this->workspace->makeCurrent();
 
     config(['services.github.app_name' => 'test-app']);
+
+    $this->mock(GithubAppJwtService::class, function ($mock) {
+        $mock->shouldReceive('generate')
+            ->andReturn('fake-jwt-token');
+    });
+    $this->mock(GithubInstallationTokenService::class, function ($mock) {
+        $mock->shouldReceive('getValidToken')
+            ->andReturn('fake-access-token');
+    });
 });
 
 it('redirects to github for authorization', function () {
@@ -52,12 +63,14 @@ it('handles callback with valid parameters', function () {
             'id' => 12345,
             'account' => [
                 'login' => 'test-org',
+                'type' => 'Organization',
                 'id' => 67890,
             ],
         ], 200),
         MockResponse::make([
             'id' => 67890,
             'login' => 'test-org',
+            'type' => 'Organization',
             'avatar_url' => 'https://example.com/avatar.png',
             'html_url' => 'https://github.com/test-org',
             'type' => 'Organization',
@@ -71,7 +84,7 @@ it('handles callback with valid parameters', function () {
     ]));
 
     $response->assertRedirect(route('integrations.index'));
-    $response->assertSessionHas('toast.type', 'success');
+    $response->assertSessionHas('flash.status', 'success');
 
     // Verify integration was created
     $integration = VersionControlIntegration::where('workspace_id', $this->workspace->id)
@@ -93,7 +106,7 @@ it('handles callback with invalid state', function () {
     ]));
 
     $response->assertRedirect(route('integrations.index'));
-    $response->assertSessionHas('toast.type', 'error');
+    $response->assertSessionHas('flash.status', 'error');
 
     // Verify no integration was created
     $integration = VersionControlIntegration::where('workspace_id', $this->workspace->id)
@@ -114,7 +127,7 @@ it('handles callback with missing installation_id', function () {
     ]));
 
     $response->assertRedirect(route('integrations.index'));
-    $response->assertSessionHas('toast.type', 'error');
+    $response->assertSessionHas('flash.status', 'error');
 });
 
 it('updates existing integration on reconnect', function () {
@@ -140,12 +153,14 @@ it('updates existing integration on reconnect', function () {
             'id' => 12345,
             'account' => [
                 'login' => 'new-org',
+                'type' => 'Organization',
                 'id' => 67890,
             ],
         ], 200),
         MockResponse::make([
             'id' => 67890,
             'login' => 'new-org',
+            'type' => 'Organization',
             'avatar_url' => 'https://example.com/new-avatar.png',
             'html_url' => 'https://github.com/new-org',
             'type' => 'Organization',

@@ -1,7 +1,7 @@
 <?php
 
-use App\Integrations\VersionControlProviderResolver;
-use App\Integrations\Github\GithubProvider;
+use App\Http\Integrations\Github\GithubProvider;
+use App\Http\Integrations\VersionControlProviderResolver;
 
 it('resolves github provider correctly', function () {
     $resolver = new VersionControlProviderResolver();

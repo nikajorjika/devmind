@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Integration;
 
 use App\Http\Controllers\Controller;
-use App\Integrations\VersionControlProviderResolver;
+use App\Http\Integrations\VersionControlProviderResolver;
 use App\Models\VersionControlIntegration;
 use App\Models\Workspace;
 use Inertia\Inertia;

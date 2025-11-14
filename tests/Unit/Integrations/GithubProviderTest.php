@@ -1,7 +1,7 @@
 <?php
 
-use App\Integrations\Github\GithubProvider;
-use App\Integrations\Github\Saloon\GithubConnector;
+use App\Http\Integrations\Github\GithubConnector;
+use App\Http\Integrations\Github\GithubProvider;
 use App\Models\Workspace;
 
 it('constructs authorization URL correctly', function () {

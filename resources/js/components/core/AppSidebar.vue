@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/sidebar';
 import WorkspaceSwitcher from '@/components/workspace/WorkspaceSwitcher.vue';
 import { dashboard, showMembers } from '@/routes';
+import { index as integrationsIndex } from '@/routes/integrations';
 import { index as developersIndex } from '@/routes/developers';
 import { index as projectIndex } from '@/routes/projects';
 import { type NavItem } from '@/types';
@@ -19,6 +20,7 @@ import {
     ChartColumnIcon,
     Folder,
     UserCog,
+    GitBranch,
     Users,
 } from 'lucide-vue-next';
 
@@ -42,6 +44,11 @@ const mainNavItems: NavItem[] = [
         title: 'Members',
         href: showMembers(),
         icon: UserCog,
+    },
+    {
+        title: 'Integrations',
+        href: integrationsIndex(),
+        icon: GitBranch,
     },
 ];
 

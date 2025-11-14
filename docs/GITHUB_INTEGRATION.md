@@ -45,7 +45,7 @@ php artisan migrate
 ```php
 namespace App\Integrations\Gitlab;
 
-use App\Integrations\Contracts\VersionControlProvider;
+use App\Http\Integrations\Contracts\VersionControlProvider;
 
 class GitlabProvider implements VersionControlProvider
 {

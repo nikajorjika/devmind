@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Integrations;
+namespace App\Http\Integrations;
 
-use App\Integrations\Contracts\VersionControlProvider;
-use App\Integrations\Github\GithubProvider;
+use App\Http\Integrations\Contracts\VersionControlProvider;
+use App\Http\Integrations\Github\GithubProvider;
 use Illuminate\Support\Facades\App;
 
 class VersionControlProviderResolver

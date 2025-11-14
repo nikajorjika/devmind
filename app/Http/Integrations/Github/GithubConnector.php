@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Integrations\Github\Saloon;
+namespace App\Http\Integrations\Github;
 
 use Saloon\Http\Connector;
 use Saloon\Traits\Plugins\AcceptsJson;
@@ -26,15 +26,5 @@ class GithubConnector extends Connector
             'Accept' => 'application/vnd.github.v3+json',
             'User-Agent' => 'DevMind-App',
         ];
-    }
-
-    /**
-     * Set the bearer token for authentication.
-     */
-    public function withToken(string $token): static
-    {
-        $this->headers()->add('Authorization', "Bearer $token");
-
-        return $this;
     }
 }

@@ -14,10 +14,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Register GithubConnector as singleton
-        $this->app->singleton(\App\Integrations\Github\Saloon\GithubConnector::class);
+        $this->app->singleton(\App\Http\Integrations\Github\GithubConnector::class);
 
         // Register VersionControlProviderResolver as singleton
-        $this->app->singleton(\App\Integrations\VersionControlProviderResolver::class);
+        $this->app->singleton(\App\Http\Integrations\VersionControlProviderResolver::class);
     }
 
     /**

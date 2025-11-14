@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Integration;
 
 use App\Http\Controllers\Controller;
-use App\Integrations\VersionControlProviderResolver;
+use App\Http\Integrations\VersionControlProviderResolver;
 use App\Models\Workspace;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,25 +35,25 @@ class GithubIntegrationController extends Controller
      */
     public function callback(Request $request): RedirectResponse
     {
+        $workspace = Workspace::current();
+        $provider = $this->providerResolver->resolve('github');
         try {
-            $workspace = Workspace::current();
-            $provider = $this->providerResolver->resolve('github');
-
-            $integration = $provider->handleCallback($request, $workspace);
-
-            return redirect()
-                ->route('integrations.index')
-                ->with('toast', [
-                    'type' => 'success',
-                    'message' => "Successfully connected to {$integration->external_name}!",
-                ]);
+            $provider->handleCallback($request, $workspace);
+            session()->flash('flash', [
+                'status' => 'success',
+                'title' => 'GitHub integration successful',
+                'description' => 'The GitHub integration has been successfully configured.',
+            ]);
         } catch (\Exception $e) {
-            return redirect()
-                ->route('integrations.index')
-                ->with('toast', [
-                    'type' => 'error',
-                    'message' => 'Failed to connect GitHub: '.$e->getMessage(),
-                ]);
+            session()->flash('flash', [
+                'status' => 'error',
+                'title' => 'GitHub integration failed: '.$e->getMessage(),
+                'description' => 'This installation request was not correctly configured, try again or contact support.',
+            ]);
         }
+
+
+        return to_route('integrations.index');
+
     }
 }
